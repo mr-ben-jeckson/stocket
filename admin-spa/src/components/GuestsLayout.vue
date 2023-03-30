@@ -4,14 +4,14 @@
             <div>
                 <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">{{ title }}</h2>
             </div>
+            <slot></slot>
         </div>
-        <slot></slot>
     </div>
 </template>
 
-<script>
-export default {
-    name: "GuestsLayout"
-}
+<script setup>
+ const { title } = defineProps({
+    title: String
+ });
 </script>
 <style scoped></style>
