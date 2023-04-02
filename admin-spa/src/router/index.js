@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import MasterLayout from "../components/MasterLayout.vue";
 import Dashboard from "../views/Dashboard.vue";
 import Login from "../views/Login.vue";
 import RequestPassword from "../views/RequestPassword.vue";
@@ -6,9 +7,36 @@ import ResetPassword from '../views/ResetPassword.vue';
 
 const routes = [
     {
-        path: '/dashboard',
-        name: 'dashboard',
-        component: Dashboard
+        path: '/app',
+        name: 'app',
+        component: MasterLayout,
+        children: [
+            {
+                path: 'dashboard',
+                name: 'app.dashboard',
+                component: Dashboard
+            },
+            {
+                path: 'users',
+                name: 'app.users',
+                component: Dashboard
+            },
+            {
+                path: 'products',
+                name: 'app.products',
+                component: Dashboard
+            },
+            {
+                path: 'inventories',
+                name: 'app.inventories',
+                component: Dashboard
+            },
+            {
+                path: 'reports',
+                name: 'app.reports',
+                component: Dashboard
+            }
+        ]
     },
     {
         path: '/login',
