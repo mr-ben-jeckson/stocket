@@ -6,9 +6,7 @@
 
         <div class="flex-1">
             <!-- Header -->
-            <header class="h-8 shadow bg-white">
-                Header
-            </header>
+            <NavBar/>
             <!-- Header -->
 
             <!-- Content -->
@@ -22,6 +20,7 @@
 
 <script setup>
 import SideBar from './SideBar.vue';
+import NavBar from './NavBar.vue';
  const { title } = defineProps({
     title: String
  });

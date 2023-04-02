@@ -55,8 +55,5 @@
 
 <script setup>
  import {HomeIcon, UserGroupIcon, UsersIcon, QueueListIcon, BriefcaseIcon, ChartBarIcon} from '@heroicons/vue/24/outline';
- const { title } = defineProps({
-    title: String
- });
 </script>
 <style scoped></style>
