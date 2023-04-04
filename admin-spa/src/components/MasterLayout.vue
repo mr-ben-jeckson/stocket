@@ -1,17 +1,19 @@
 <template>
-    <div class="min-h-full flex">
+    <div class="min-h-full bg-gray-200 flex">
         <!-- Sidebar -->
-        <SideBar />
+        <SideBar :class="{'hidden': !isOpenedSideBar}" />
         <!-- Sidbar -->
 
         <div class="flex-1">
             <!-- Header -->
-            <NavBar/>
+            <NavBar @toggle-side-bar="toggleSideBar"/>
             <!-- Header -->
 
             <!-- Content -->
-            <main>
-                <router-view></router-view>
+            <main class="p-6">
+                <div class="py-4 px-4 rounded bg-white">
+                    <router-view></router-view>
+                </div>
             </main>
             <!-- Content -->
         </div>
@@ -19,10 +21,29 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onUnmounted } from 'vue';
 import SideBar from './SideBar.vue';
 import NavBar from './NavBar.vue';
  const { title } = defineProps({
     title: String
  });
+ const isOpenedSideBar = ref(true);
+
+ function toggleSideBar() {
+    isOpenedSideBar.value = !isOpenedSideBar.value;
+}
+
+onMounted(() => {
+    handleSideBar();
+    window.addEventListener('resize', handleSideBar);
+})
+
+onUnmounted(() => {
+    window.removeEventListener('resize', handleSideBar);
+})
+
+function handleSideBar() {
+    isOpenedSideBar.value = window.outerWidth > 768;
+}
 </script>
 <style scoped></style>
