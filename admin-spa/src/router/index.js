@@ -5,6 +5,7 @@ import Login from "../views/Login.vue";
 import RequestPassword from "../views/RequestPassword.vue";
 import ResetPassword from '../views/ResetPassword.vue';
 import Products from "../views/Products.vue";
+import NotFound from '../views/NotFound.vue';
 import store from "../store";
 
 const routes = [
@@ -63,6 +64,14 @@ const routes = [
         path: '/reset-password/:token',
         name: 'resetPassword',
         component: ResetPassword,
+        meta: {
+            isGuestCheck: true
+        }
+    },
+    {
+        path: '/:pathMatch(.*)',
+        name: 'notfound',
+        component: NotFound,
         meta: {
             isGuestCheck: true
         }
