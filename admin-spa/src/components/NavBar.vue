@@ -8,7 +8,7 @@
       class="flex items-center"
       >
       <img src="https://randomuser.me/api/portraits/women/49.jpg" class="rounded-full w-8 mr-2" alt="profile img">
-      <small>Jessica</small>
+      <small>{{ loginUser.name }}</small>
       <ChevronDownIcon
           class="h-5 w-5 text-blue-700 hover:text-blue-400"
           aria-hidden="true"
@@ -69,8 +69,11 @@ import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 import { ChevronDownIcon } from '@heroicons/vue/20/solid';
 import store from '../store';
 import router from '../router';
+import { computed } from 'vue';
 
 const emit = defineEmits(['toggle-side-bar']);
+
+const loginUser = computed(() => store.state.user.data);
 
 function logout() {
     store.dispatch('logout')
