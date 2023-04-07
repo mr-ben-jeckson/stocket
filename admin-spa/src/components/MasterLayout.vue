@@ -24,6 +24,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import SideBar from './SideBar.vue';
 import NavBar from './NavBar.vue';
+import store from '../store';
  const { title } = defineProps({
     title: String
  });
@@ -34,6 +35,7 @@ import NavBar from './NavBar.vue';
 }
 
 onMounted(() => {
+    store.dispatch('getUser');
     handleSideBar();
     window.addEventListener('resize', handleSideBar);
 })
