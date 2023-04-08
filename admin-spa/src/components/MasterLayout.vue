@@ -19,13 +19,13 @@
     </div>
   </div>
   <div v-else class="min-h-full bg-gray-200 flex items-center justify-center">
-    <Spinner />
+    <Loader />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
-import Spinner from "../core/Spinner.vue";
+import Loader from "./core/Loader.vue";
 import SideBar from "./SideBar.vue";
 import NavBar from "./NavBar.vue";
 import store from "../store";

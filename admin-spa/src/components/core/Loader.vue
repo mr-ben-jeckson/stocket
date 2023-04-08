@@ -25,7 +25,7 @@
 </template>
 <script>
 export default {
-  name: "Spinner",
+  name: "Loader",
 };
 </script>
 <style scoped></style>
