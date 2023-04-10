@@ -24,4 +24,11 @@ class Product extends Model
             ->saveSlugsTo('slug');
     }
 
+    public function categories() {
+        return $this->belongsToMany(Category::class, 'product_category', 'category_id', 'product_id');
+    }
+
+    public function tags() {
+        return $this->belongsToMany(Tag::class, 'product_tag', 'tag_id', 'product_id');
+    }
 }
