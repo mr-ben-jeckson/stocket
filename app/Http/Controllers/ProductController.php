@@ -16,7 +16,17 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return ProductListsResource::collection(Product::query()->paginate(10));
+        $search = request('search', false);
+        $perPage = request('per_page', 10);
+        $sortField = request('sort_field', 'updated_at');
+        $sortDirection = request('sort_direction', 'desc');
+        $query = Product::query();
+        $query->orderBy($sortField, $sortDirection);
+        if($search) {
+            $query->where('title', 'LIKE', "%{$search}%")
+            ->orWhere('description', 'LIKE', "%{$search}%");
+        }
+        return ProductListsResource::collection($query->paginate($perPage));
     }
 
     /**

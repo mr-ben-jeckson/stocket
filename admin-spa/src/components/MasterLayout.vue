@@ -11,9 +11,7 @@
 
       <!-- Content -->
       <main class="p-6">
-        <div class="py-4 px-4 rounded bg-white">
           <router-view></router-view>
-        </div>
       </main>
       <!-- Content -->
     </div>
