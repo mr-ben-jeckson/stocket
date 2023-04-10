@@ -16,3 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/test', function () {
+    $response = \App\Models\Category::find(1);
+    $data = json_decode($response->locale);
+    echo $data->mm;
+});
