@@ -30,10 +30,30 @@
               </header>
               <form @submit.prevent="onSubmit">
                 <div class="bg-white px-4 pt-5 pb-4">
-
+                    <CustomInput class="mb-2" v-model="product.title" label="Product Title" />
+                    <CustomInput class="mb-2" type="file" label="Product Image" @change="files => product.images = files" />
+                    <CustomInput class="mb-2" type="textarea" label="Description" v-model="product.description" />
+                    <CustomInput class="mb-2" type="number" label="Price" v-model="product.price" prepend="$" />
                 </div>
                 <footer class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-
+                    <button
+                      type="submit"
+                      class="mt-3 w-full inline-flex justify-center border-gray-300 shadow-sm
+                      py-2 px-4 border border-transparent text-sm font-medium rounded-md
+                       text-white bg-blue-600 hover:bg-blue-700 focus:outline-none
+                       focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                    >
+                      Submit
+                    </button>
+                    <button
+                      type="button"
+                      class="mt-3 w-full inline-flex justify-center rounded-md
+                      border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700
+                       hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+                       sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                    >
+                      Cancel
+                    </button>
                 </footer>
               </form>
             </DialogPanel>
@@ -53,6 +73,7 @@ import {
   DialogTitle,
 } from '@headlessui/vue';
 import Loader from '../../components/core/Loader.vue';
+import store from '../../store';
 
 const product = ref({
   id: props.product.id,
@@ -92,6 +113,31 @@ onUpdated(() => {
 function closeModal() {
   show.value = false;
   emit(close);
+}
+
+function onSubmit() {
+  loading.value = true;
+  if(product.value.id) {
+    store.dispatch('updatedProduct', product.value)
+      .then(response => {
+        loading.value = false;
+        if(response.status === 200) {
+          //show notification
+          store.dispatch('getProducts');
+          closeModal();
+        }
+      })
+  } else {
+    store.dispatch('createProduct', product.value)
+      .then(response => {
+        loading.value = false;
+        if(response.status === 201) {
+          //show notification
+          store.dispatch('getProducts');
+          closeModal();
+        }
+      })
+  }
 }
 
 </script>
