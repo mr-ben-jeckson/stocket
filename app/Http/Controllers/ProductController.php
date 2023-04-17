@@ -6,6 +6,9 @@ use App\Models\Product;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductListsResource;
 use App\Http\Resources\ProductResource;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -37,7 +40,29 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-        return new ProductResource(Product::create($request->validated()));
+        $data = $request->validated();
+        $data['created_by'] = $request->user()->id;
+        $data['updated_by'] = $request->user()->id;
+        $url = [];
+        $mine = [];
+        $size = [];
+        if($request->hasFile('image')) {
+            foreach($request->file('image') as /** @var \Illuminate\Http\UploadedFile $image */ $image) {
+                       $relativePath = $this->saveImage($image);
+                       array_push($url, URL::to(Storage::url($relativePath)));
+                       array_push($mine, $image->getClientMimeType());
+                       array_push($size, $image->getSize());
+            }
+        }
+        $data['images'] = json_encode([
+            'url' => $url,
+            'mime' => $mine,
+            'size' => $size
+         ]);
+
+        $product = Product::create($data);
+
+        return new ProductResource($product);
     }
 
     /**
@@ -75,5 +100,18 @@ class ProductController extends Controller
         $product->delete();
 
         return response()->noContent();
+    }
+
+    private function saveImage(\Illuminate\Http\UploadedFile $image) {
+        $path = 'images/' . Str::random();
+        if(!Storage::exists($path)) {
+            Storage::makeDirectory($path, 0755, true);
+
+        }
+        if(!Storage::putFileAs('public/'.$path, $image, $image->getClientOriginalName())) {
+            throw new \Exception("Unable to save \"{$image->getClientOriginalName()}\"");
+        }
+
+        return $path. '/' . $image->getClientOriginalName();
     }
 }

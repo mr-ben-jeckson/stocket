@@ -3,7 +3,7 @@
     <Dialog as="div" @close="closeModal" class="relative z-10">
       <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
         leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
-        <div class="fixed inset-0 bg-black bg-opacity-25" />
+        <div class="fixed inset-0 bg-black bg-opacity-75" />
       </TransitionChild>
 
       <div class="fixed inset-0 overflow-y-auto">
@@ -31,7 +31,7 @@
               <form @submit.prevent="onSubmit">
                 <div class="bg-white px-4 pt-5 pb-4">
                     <CustomInput class="mb-2" v-model="product.title" label="Product Title" />
-                    <CustomInput class="mb-2" type="file" label="Product Image" @change="files => product.images = files" />
+                    <CustomInput class="mb-2" type="file" label="Product Image" @change="file => product.image = file" multiple />
                     <CustomInput class="mb-2" type="textarea" label="Description" v-model="product.description" />
                     <CustomInput class="mb-2" type="number" label="Price" v-model="product.price" prepend="$" />
                 </div>
@@ -51,6 +51,7 @@
                       border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700
                        hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
                        sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                       @click="closeModal" ref="cancelButtonRef"
                     >
                       Cancel
                     </button>
@@ -74,11 +75,12 @@ import {
 } from '@headlessui/vue';
 import Loader from '../../components/core/Loader.vue';
 import store from '../../store';
+import CustomInput from '../../components/core/CustomInput.vue';
 
 const product = ref({
   id: props.product.id,
   title: props.product.title,
-  images: props.product.images,
+  image: props.product.image,
   description: props.product.description,
   price: props.product.price
 })
@@ -104,7 +106,7 @@ onUpdated(() => {
   product.value = {
     id: props.product.id,
     title: props.product.title,
-    images: props.product.images,
+    image: props.product.image,
     description: props.product.description,
     price: props.product.price
   }

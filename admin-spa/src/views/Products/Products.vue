@@ -8,7 +8,7 @@
             Add New Products
         </button>
     </div>
-    <ProductModal v-model="isShowCreateModal" />
+    <ProductModal v-model="isShowCreateModal" :product="productModel" />
     <ProductTable />
     </div>
 </template>
@@ -18,6 +18,13 @@ import ProductModal from './ProductModal.vue';
 import { ref } from 'vue';
 
 const isShowCreateModal = ref(false);
+const productModel = ref({
+    id: '',
+    title: '',
+    images: '',
+    description: '',
+    price: ''
+});
 
 function showCreateModal() {
     isShowCreateModal.value = true;
