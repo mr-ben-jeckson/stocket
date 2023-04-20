@@ -25,7 +25,7 @@ export function logout({commit}) {
         });
 }
 
-export function getProducts({commit}, {url = null, search = '', perPage = 10, sort_field, sort_direction}) {
+export function getProducts({commit}, {url = null, search = '', perPage = 10, sort_field, sort_direction} = {}) {
     commit('setProducts', [true]);
     url = url || '/product'
     return axiosClient.get(url, {
@@ -76,4 +76,28 @@ export function updateProduct({commit}, product) {
     }
 
     return axiosClient.post(`/product/${id}`, product);
+}
+
+export function deleteProduct({commit}, id) {
+    return axiosClient.delete(`/product/${id}`);
+}
+
+export function getCategory({commit}) {
+    return axiosClient.get('/category')
+                .then(res => {
+                    commit('setCategories', [false, res.data]);
+                })
+                .catch(() => {
+                    commit('setCategories', [false]);
+                })
+}
+
+export function getTag({commit}) {
+    return axiosClient.get('/tag')
+                .then(res => {
+                    commit('setTags', [ false, res.data]);
+                })
+                .catch(() => {
+                    commit('setTags', [false]);
+                })
 }

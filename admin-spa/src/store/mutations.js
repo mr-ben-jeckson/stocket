@@ -25,3 +25,17 @@ export function setProducts(state, [loading, response = null]) {
     }
     state.products.loading = loading;
 }
+
+export function setCategories(state, [loading, response=null]) {
+    if(response) {
+        state.category.data = response.data;
+    }
+    state.category.loading = loading;
+}
+
+export function setTags(state, [loading, response=null]) {
+    if(response) {
+        state.tag.data = response.data;
+    }
+    state.category.loading = loading;
+}

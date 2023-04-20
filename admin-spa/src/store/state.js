@@ -12,6 +12,14 @@ const state = {
         page: 1,
         limit: null,
         total: null
+    },
+    category: {
+        loading: false,
+        data: [],
+    },
+    tag: {
+        loading: false,
+        data: []
     }
 }
 
