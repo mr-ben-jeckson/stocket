@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductListsResource;
 use App\Http\Resources\ProductResource;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -41,11 +42,11 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $data = $request->validated();
-        $data['created_by'] = $request->user()->id;
-        $data['updated_by'] = $request->user()->id;
         $url = [];
         $mine = [];
         $size = [];
+
+        // File Saving to Storage
         if($request->hasFile('image')) {
             foreach($request->file('image') as /** @var \Illuminate\Http\UploadedFile $image */ $image) {
                        $relativePath = $this->saveImage($image);
@@ -54,13 +55,28 @@ class ProductController extends Controller
                        array_push($size, $image->getSize());
             }
         }
+
+        // DB images json structure
         $data['images'] = json_encode([
             'url' => $url,
             'mime' => $mine,
             'size' => $size
          ]);
 
-        $product = Product::create($data);
+        //Product Model Saving
+        $product = Product::create([
+            'title' => $data['title'],
+            'images' => $data['images'],
+            'description' => $data['description'],
+            'price' => $data['price'],
+            'is_published' => $data['published'],
+            'created_by' => $request->user()->id,
+            'updated_by' => $request->user()->id,
+        ]);
+
+        //Sync of Tags and Categories via Pivot Tables
+        if(isset($data['category'])) $product->categories()->sync($data['category']);
+        if(isset($data['tag'])) $product->tags()->sync($data['tag']);
 
         return new ProductResource($product);
     }
@@ -95,8 +111,17 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(Request $request,\App\Models\Product  $product)
     {
+        // adding deleted by
+        $product->update([
+            'deleted_by'=> $request->user()->id
+        ]);
+        // remove categories from pivot
+        $product->categories()->detach();
+        // remove tags from pivot
+        $product->tags()->detach();
+        //soft delete
         $product->delete();
 
         return response()->noContent();

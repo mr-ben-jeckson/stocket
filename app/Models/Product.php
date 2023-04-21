@@ -34,10 +34,10 @@ class Product extends Model
     }
 
     public function categories() {
-        return $this->belongsToMany(Category::class, 'product_category', 'category_id', 'product_id');
+        return $this->belongsToMany(Category::class, 'product_category');
     }
 
     public function tags() {
-        return $this->belongsToMany(Tag::class, 'product_tag', 'tag_id', 'product_id');
+        return $this->belongsToMany(Tag::class, 'product_tag');
     }
 }

@@ -16,10 +16,13 @@
                         </div>
                         <div class="w-auto lg:col-span-3 md:col-span-2 px-2 mb-5">
                             <div class="p-inputgroup flex-1">
-                                <MultiSelect id="ms-category" v-model="product.category" display="chip" filter
-                                    :options="category" optionLabel="name" :maxSelectedLabels="category.length" :selectionLimit="5" placeholder="Select Categories" class="w-full" />
+                                <MultiSelect id="ms-category" v-model="product.category" display="comma" filter
+                                    :options="category" optionLabel="name" :maxSelectedLabels="0" :selectionLimit="5" placeholder="Select Categories" class="w-full" />
                                 <Button icon="pi pi-plus-circle" />
                             </div>
+                        </div>
+                        <div v-if="product.category && product.category.length > 0" class="w-auto lg:col-span-4 md:col-span-2 px-2 mb-5 mt-5">
+                            <Tag icon="pi pi-bars" value="Primary" v-for="(category,index) of product.category" :key="index" class="m-2">{{ category.name }} <span class="pi pi-times text-sm" @click="removeCategory(category.id)"></span></Tag>
                         </div>
                         <div class="w-auto lg:col-span-4 md:col-span-2 px-2 mb-5 mt-5">
                             <span class="p-float-label">
@@ -37,8 +40,8 @@
                                         <template #content="{ files, messages, removeFileCallback }">
                                             <div v-if="files.length > 0">
                                                 <div v-if="messages.length > 0 && files.length > 0">
-                                                    <div v-for="(message, index) of messages" :key="index">
-                                                        <Message severity="error" :life="3000" :sticky="false">{{message}}</Message>
+                                                    <div v-for="(message, index) of messages" :key="index + message">
+                                                        <Message severity="error" life="3000" sticky="false">{{message}}</Message>
                                                     </div>
                                                 </div>
                                                 <div class="container">
@@ -67,9 +70,18 @@
                         </div>
                         <div class="w-auto lg:col-span-3 md:col-span-2 px-2 mb-5 mt-5">
                             <div class="p-inputgroup flex-1">
-                                <MultiSelect id="ms-category" v-model="product.tag" display="chip" filter
-                                    :options="tag" optionLabel="name" :maxSelectedLabels="tag.length" :selectionLimit="5" placeholder="Select Tags" class="w-full" />
+                                <MultiSelect v-model="product.tag" display="comma" filter
+                                    :options="tag" optionLabel="name" :maxSelectedLabels="0" placeholder="Select Tags" class="w-full"/>
                                 <Button icon="pi pi-plus-circle" />
+                            </div>
+                        </div>
+                        <div v-if="product.tag && product.tag.length > 0" class="w-auto lg:col-span-4 md:col-span-2 px-2 mb-5 mt-5">
+                            <Tag icon="pi pi-tag" value="Primary" v-for="(tag,index) of product.tag" :key="index" class="m-2">{{ tag.name }} <span class="pi pi-times text-sm" @click="removeTag(tag.id)"></span></Tag>
+                        </div>
+                        <div class="w-auto lg:col-span-4 md:col-span-2 px-2 mb-5 mt-5">
+                            <div class="card flex justify-content-center">
+                                <InputSwitch id="published" v-model="product.published" />
+                                <label for="published" class="ml-2"> Published the product for customers </label>
                             </div>
                         </div>
                         <div class="w-atuo lg:col-span-4 md:col-span-2 px-2 mb-5 mt-5">
@@ -88,13 +100,6 @@
 </template>
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-//theme
-import "../../assets/theme.css";
-//core
-import "primevue/resources/primevue.min.css";
-//icons
-import "primeicons/primeicons.css";
-//components
 import InputText from 'primevue/inputtext';
 import MultiSelect from 'primevue/multiselect';
 import Textarea from 'primevue/textarea';
@@ -102,9 +107,11 @@ import FileUpload from 'primevue/fileupload';
 import InputNumber from 'primevue/inputnumber';
 import Toast from 'primevue/toast';
 import Message from 'primevue/message';
-import Badge from 'primevue/badge';
+import Tag from 'primevue/tag';
 import Button from 'primevue/button';
+import InputSwitch from 'primevue/inputswitch';
 import { useToast } from "primevue/usetoast";
+
 import store from '../../store';
 
 const isLoading = ref(false);
@@ -115,10 +122,14 @@ const product = ref({
     image: props.product.image,
     description: props.product.description,
     price: props.product.price,
+    category: props.product.category,
+    tag: props.product.tag,
+    published: props.product.published
 });
 
 const category = computed(() => store.state.category.data);
 const tag = computed(() => store.state.tag.data);
+
 console.log(tag);
 const props = defineProps({
     product: {
@@ -138,6 +149,10 @@ function getCategory() {
 
 function getTag() {
     store.dispatch('getTag');
+}
+
+const removeCategory = (id) => {
+    product.value.category = product.value.category.filter((cat) => cat.id !== id);
 }
 
 const formatSize = (bytes) => {
@@ -168,6 +183,10 @@ const selectFileClear = () => {
     product.value.image = [];
 }
 
+const removeTag = (id) => {
+    product.value.tag = product.value.tag.filter((tag) => tag.id !== id);
+}
+
 const toast = useToast();
 
 const onSubmit = () => {
@@ -187,7 +206,18 @@ const onSubmit = () => {
     }
     isLoading.value = true;
     toast.add({ severity: 'info', summary: 'Info', detail: 'Product is being saved'});
-    store.dispatch('createProduct', product.value)
+
+    const productObj = {
+        'title' : product.value.title,
+        'image' : product.value.image,
+        'description' : product.value.description,
+        'category' : product.value.category ? product.value.category.map(item => item.id) : undefined,
+        'tag': product.value.tag ? product.value.tag.map(item => item.id) : undefined,
+        'price' : product.value.price,
+        'published' : product.value.published === true ? 1 : 0
+    }
+
+    store.dispatch('createProduct', productObj)
             .then(response => {
                 isLoading.value = false;
                 toast.removeAllGroups();

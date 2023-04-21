@@ -3,6 +3,13 @@ import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import './index.css';
 import './style.css';
+//prime vue
+//theme
+import "./assets/theme.css";
+//core
+import "primevue/resources/primevue.min.css";
+//icons
+import "primeicons/primeicons.css";
 import store from './store';
 import router from './router';
 import App from './App.vue'
