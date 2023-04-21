@@ -20,7 +20,9 @@ class Product extends Model
         'price',
         'images',
         'created_by',
-        'updated_by'
+        'updated_by',
+        'is_published',
+        'deleted_by'
     ];
 
     /**
