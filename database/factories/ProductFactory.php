@@ -14,11 +14,23 @@ class ProductFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    private function fakeImageObject() {
+        $object = (object) [
+            'id' => uniqid(),
+            'url' => fake()->imageUrl(),
+            'mine' => fake()->randomElement(['image/png', 'image/jpg']),
+            'storage' => fake()->randomElement(['faker/fake.png', 'faker/fake.jpg']),
+            'size' => fake()->randomElement([ 22000, 34500, 19999, 154110 ]),
+            'created_at' => now()
+        ];
+        return $object;
+    }
+
     public function definition()
     {
         return [
             'title' => fake()->text(),
-            'images' => json_encode(['url'=> [fake()->imageUrl(), fake()->imageUrl(), fake()->imageUrl()]]),
+            'images' => json_encode([$this->fakeImageObject(), $this->fakeImageObject(), $this->fakeImageObject()]),
             'description' => fake()->realText(2000),
             'price' => fake()->randomFloat(2, 20, 5000),
             'created_at' => now(),

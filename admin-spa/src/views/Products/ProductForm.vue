@@ -10,11 +10,11 @@
                     <div class="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-none">
                         <div class="w-auto px-2 mb-5">
                             <span class="p-float-label">
-                                <InputText id="productTitle" v-model="product.title" class="w-full" />
+                                <InputText id="productTitle" v-model="product.title" @keyup="() => props.product.title = product.title" class="w-full" />
                                 <label for="productTitle">Product Title</label>
                             </span>
                         </div>
-                        <div class="w-auto lg:col-span-3 md:col-span-2 px-2 mb-5">
+                        <div class="w-auto lg:col-span-3 px-2 mb-5">
                             <div class="p-inputgroup flex-1">
                                 <MultiSelect id="ms-category" v-model="product.category" display="comma" filter
                                     :options="category" optionLabel="name" :maxSelectedLabels="0" :selectionLimit="5" placeholder="Select Categories" class="w-full" />
@@ -31,11 +31,33 @@
                             </span>
                         </div>
                         <div class="w-auto lg:col-span-4 md:col-span-2 px-2 mb-5 mt-5">
+                            <!-- Edit Form Exist Images -->
+                            <div v-if="props.product.image && props.product.image.length > 0" class="card mb-5 border-2 rounded border-gray-200 px-2 py-5">
+                                <p class="px-2 text-gray-500 py-2">The following images are a gallery of the product. You can remove each till an image.
+                                    Please click choose button to add more image.
+                                </p>
+                                <div class="container">
+                                    <Loader v-if="isLoading" class="my-8" />
+                                    <div v-else class="grid 2xl:grid-cols-6 lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-none max-sm:grid-cols-none">
+                                        <div v-for="(file, index) of props.product.image" :key="index" class="flex flex-col justify-items-center border-2 rounded shadow border-gray-200 px-2 py-5 m-1">
+                                            <div class="px-2 py-3 justify-center items-center">
+                                                <img role="presentation" :alt="file.url" :src="file.url" class="shadow-2 w-[125px] h-[80px] object-cover mx-auto" />
+                                            </div>
+                                            <div class="px-2 font-semibold text-center">{{ formatSize(file.size) }}</div>
+                                            <div class="px-2 py-3 text-center">
+                                                <!-- Just only show more than an image -->
+                                                <Button v-if="props.product.image.length > 1" icon="pi pi-times" @click="singleImageRemove(props.product.id, file.id, file.url)" outlined rounded  severity="danger" size="small" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- File Upload -->
                             <div class="card">
                                     <FileUpload @select="onAdvancedUpload($event)" @clear="selectFileClear()" :showUploadButton="false" @remove="onAdvancedUpload($event)" :multiple="true" accept="image/*" :fileLimit="10" :maxFileSize="2000000" ref="filesSelector">
                                         <template #empty>
-                                            <p>Drag and drop image files to here to attach.</p>
+                                            <p class="text-gray-500">Drag and drop image files to here to attach.</p>
                                         </template>
                                         <template #content="{ files, messages, removeFileCallback }">
                                             <div v-if="files.length > 0">
@@ -46,7 +68,7 @@
                                                 </div>
                                                 <div class="container">
                                                     <div class="grid 2xl:grid-cols-6 lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-none max-sm:grid-cols-none">
-                                                            <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="flex flex-col justify-items-center border-2 rounded border-gray-200 px-2 py-5 m-1">
+                                                            <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="flex flex-col justify-items-center border-2 rounded shadow border-gray-200 px-2 py-5 m-1">
                                                             <div class="px-2 justify-center items-center">
                                                                 <img role="presentation" :alt="file.name" :src="file.objectURL" class="shadow-2 w-[125px] h-[80px] object-cover mx-auto" />
                                                             </div>
@@ -55,7 +77,7 @@
                                                             </div>
                                                             <div class="px-2 font-semibold text-center">{{ formatSize(file.size) }}</div>
                                                             <div class="px-2 py-5 text-center">
-                                                                <Button icon="pi pi-times" @click="onRemoveTemplatingFile(file, removeFileCallback, index)" outlined rounded  severity="danger" />
+                                                                <Button icon="pi pi-times" @click="onRemoveTemplatingFile(file, removeFileCallback, index)" outlined rounded  severity="danger" size="small" />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -66,10 +88,13 @@
                             </div>
                         </div>
                         <div class="w-auto px-2 mb-5 mt-5">
-                            <InputNumber v-model="product.price" inputId="stacked-buttons" showButtons mode="currency" currency="USD" class="w-full" />
+                            <span class="p-float-label">
+                                <InputNumber id="price" v-model="product.price" inputId="stacked-buttons" :min="0.00" showButtons mode="currency" currency="USD" class="w-full" />
+                                <label for="price">Product Price</label>
+                            </span>
                         </div>
-                        <div class="w-auto lg:col-span-3 md:col-span-2 px-2 mb-5 mt-5">
-                            <div class="p-inputgroup flex-1">
+                        <div class="w-auto lg:col-span-3 px-2 mb-5 mt-5">
+                            <div class="p-inputgroup flex-1 w-full">
                                 <MultiSelect v-model="product.tag" display="comma" filter
                                     :options="tag" optionLabel="name" :maxSelectedLabels="0" placeholder="Select Tags" class="w-full"/>
                                 <Button icon="pi pi-plus-circle" />
@@ -84,12 +109,20 @@
                                 <label for="published" class="ml-2"> Published the product for customers </label>
                             </div>
                         </div>
-                        <div class="w-atuo lg:col-span-4 md:col-span-2 px-2 mb-5 mt-5">
+                        <div class="w-atuo lg:col-span-2 px-2 mb-5 mt-5">
+                            <button @click.prevent="closeForm()" class="mt-3 w-full inline-flex justify-center border-gray-200 shadow-sm
+                          py-2 px-4 border border-transparent text-sm font-medium rounded-md
+                           text-black bg-gray-200 hover:bg-gray-100 focus:outline-none
+                           focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                        Cancel
+                                    </button>
+                        </div>
+                        <div class="w-atuo lg:col-span-2 px-2 mb-5 mt-5">
                             <button type="submit" class="mt-3 w-full inline-flex justify-center border-gray-300 shadow-sm
                           py-2 px-4 border border-transparent text-sm font-medium rounded-md
                            text-white bg-blue-600 hover:bg-blue-700 focus:outline-none
-                           focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:cursor-none disabled:bg-blue-400" v-bind:disabled="isLoading">
-                                        Submit
+                           focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-blue-400" v-bind:disabled="isLoading">
+                                        Save
                                     </button>
                         </div>
                     </div>
@@ -99,7 +132,8 @@
     </div>
 </template>
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, watchEffect, ref } from 'vue';
+import Loader from '../../components/core/Loader.vue';
 import InputText from 'primevue/inputtext';
 import MultiSelect from 'primevue/multiselect';
 import Textarea from 'primevue/textarea';
@@ -130,12 +164,32 @@ const product = ref({
 const category = computed(() => store.state.category.data);
 const tag = computed(() => store.state.tag.data);
 
-console.log(tag);
 const props = defineProps({
+    modelValue: Boolean,
     product: {
         required: true,
         type: Object
     },
+})
+
+const emit = defineEmits(['update:modelValue']);
+
+function closeForm() {
+    props.modelValue = false;
+    emit('update:modelValue');
+}
+
+watchEffect(() => {
+    product.value = {
+        id: props.product.id,
+        title: props.product.title,
+        image: props.product.image,
+        description: props.product.description,
+        price: props.product.price,
+        category: props.product.category,
+        tag: props.product.tag,
+        published: props.product.published
+    };
 })
 
 onMounted(() => {
@@ -151,7 +205,7 @@ function getTag() {
     store.dispatch('getTag');
 }
 
-const removeCategory = (id) => {
+function removeCategory(id) {
     product.value.category = product.value.category.filter((cat) => cat.id !== id);
 }
 
@@ -179,18 +233,36 @@ const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
     totalSize.value -= parseInt(formatSize(file.size));
 };
 
-const selectFileClear = () => {
+function selectFileClear() {
     product.value.image = [];
-}
-
-const removeTag = (id) => {
-    product.value.tag = product.value.tag.filter((tag) => tag.id !== id);
 }
 
 const toast = useToast();
 
-const onSubmit = () => {
-    //custom validation with primevue toast
+function singleImageRemove(id, index, url) {
+    isLoading.value = true;
+    store.dispatch('deleteSingleImageProduct', {
+            id, index, url
+        })
+        .then(response => {
+            isLoading.value = false;
+            if(response.status === 422) {
+                console.log(response.message);
+            }
+            if(response.status === 201) {
+                toast.add({ severity: 'success', summary: 'Success', detail: 'The image was removed from product\'s gallery', life: 3000 })
+                props.product.image = response.data;
+            }
+            store.dispatch('getProducts');
+        });
+}
+
+function removeTag(id) {
+    product.value.tag = product.value.tag.filter((tag) => tag.id !== id);
+}
+
+function onSubmit() {
+    //custom validation with primevue toast // to insall some validation library
     if(!product.value.title) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Title is required', life: 3000 });
         return;
@@ -224,12 +296,9 @@ const onSubmit = () => {
                 if (response.status === 201) {
                     toast.add({ severity: 'success', summary: 'Success', detail: 'Product was added', life: 3000 })
                     filesSelector.value.clear();
-                    product.value = {};
-                    product.value.price = 0.00;
-                    //show notification
+                    closeForm();
                     store.dispatch('getProducts');
                 }
             })
 }
-
 </script>

@@ -93,7 +93,7 @@
                                         <button :class="[
                                             active ? 'bg-blue-600 text-white' : 'text-gray-900',
                                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                        ]">
+                                        ]" @click="editProduct(product)">
                                             <PencilSquareIcon :active="active" class="mr-2 h-5 w-5 text-blue-400"
                                                 aria-hidden="true" />
                                             Edit
@@ -153,6 +153,8 @@ const products = computed(() => store.state.products);
 const sortField = ref('updated_at');
 const sortDirection = ref('desc');
 
+const emit = defineEmits(['clickEdit', 'clickDelete'])
+
 onMounted(() => {
     getProducts();
 });
@@ -189,10 +191,15 @@ function sortProduct(field) {
     getProducts();
 }
 
+function editProduct(product) {
+    emit('clickEdit', product);
+}
+
 function deleteProduct(product) {
     if (!confirm(`Are you sure to delete the product. You cannot restore`)) {
         return;
     }
+    emit('clickDelete');
     store.dispatch('deleteProduct', product.id)
         .then(res => {
             // todo

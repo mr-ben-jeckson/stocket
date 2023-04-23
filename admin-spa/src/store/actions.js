@@ -61,6 +61,10 @@ export function createProduct({commit}, product) {
     });
 }
 
+export function getProduct({}, id) {
+    return axiosClient.get(`/product/${id}`);
+}
+
 export function updateProduct({commit}, product) {
     const id = product.id;
     if(product.image instanceof File) {
@@ -76,6 +80,16 @@ export function updateProduct({commit}, product) {
     }
 
     return axiosClient.post(`/product/${id}`, product);
+}
+
+export function deleteSingleImageProduct({commit}, { id, index, url}) {
+    return axiosClient.delete('product/gallery/remove/', {
+        params: {
+            id,
+            index,
+            url
+        }
+    });
 }
 
 export function deleteProduct({commit}, id) {

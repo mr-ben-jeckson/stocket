@@ -23,25 +23,32 @@
             </div>
         </div>
     </div>
-    <ProductForm  :class="isDropModalForm ? 'block' : 'hidden'" :product="productModel" />
+    <ProductForm  :class="isDropModelForm ? 'block' : 'hidden'" v-model="isDropModelForm" :product="productModel" />
     <ProductModal v-model="isShowCreateModal" :product="productModel" />
-    <ProductTable />
+    <ProductTable @clickEdit="editProduct" @clickDelete="() => isDropModelForm = false" />
     </div>
 </template>
 <script setup>
 import ProductTable from './ProductTable.vue';
 import ProductModal from './ProductModal.vue';
 import ProductForm from './ProductForm.vue';
+import store from '../../store';
 import { ref } from 'vue';
 
 const isShowCreateModal = ref(false);
-const isDropModalForm = ref(false);
-const productModel = ref({
+const isDropModelForm = ref(false);
+const defaultModel = {
     id: '',
     title: '',
-    images: '',
+    images: [],
     description: '',
-    price: ''
+    price: Number(0.00),
+    tag: [],
+    category: [],
+    published: true,
+}
+const productModel = ref({
+    ...defaultModel
 });
 
 function showCreateModal() {
@@ -49,9 +56,18 @@ function showCreateModal() {
 }
 
 function showDropModalForm() {
-    isDropModalForm.value = !isDropModalForm.value;
+    productModel.value = {...defaultModel};
+    isDropModelForm.value = true;
 }
 
+function editProduct(product) {
+    store.dispatch('getProduct', product.id)
+            .then(({data}) => {
+                productModel.value = data;
+                isDropModelForm.value = false;
+                isDropModelForm.value = true;
+            })
+}
 </script>
 <style scoped>
 </style>
