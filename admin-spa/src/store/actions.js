@@ -51,6 +51,9 @@ export function createProduct({commit}, product) {
         form.append('image', Array.from(product.image));
         form.append('description', product.description);
         form.append('price', product.price);
+        form.append('tag', Array.from(product.tag));
+        form.append('category', Array.from(product.category));
+        form.append('published', Array.from(product.published));
         product = form;
     }
 
@@ -70,16 +73,23 @@ export function updateProduct({commit}, product) {
     if(product.image instanceof File) {
         const form = new FormData();
         form.append('title', product.title);
-        form.append('image', product.image);
+        form.append('image', Array.from(product.image));
         form.append('description', product.description);
         form.append('price', product.price);
+        form.append('tag', Array.from(product.tag));
+        form.append('category', Array.from(product.category));
+        form.append('published', Array.from(product.published));
         form.append('_method', 'PUT');
         product = form;
     } else {
         product._method = 'PUT';
     }
 
-    return axiosClient.post(`/product/${id}`, product);
+    return axiosClient.post(`/product/${id}`, product, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
 }
 
 export function deleteSingleImageProduct({commit}, { id, index, url}) {

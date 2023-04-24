@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Http\Resources\TagResource;
-use App\Models\Tag;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CategoryResource;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
-class TagController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +16,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        return TagResource::collection(Tag::all());
+        return CategoryResource::collection(Category::all());
     }
 
     /**

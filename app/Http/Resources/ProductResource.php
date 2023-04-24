@@ -25,6 +25,7 @@ class ProductResource extends JsonResource
             'price' => $this->price,
             'category' => $this->categories->map->only(['id', 'name'])->values(),
             'tag' => $this->tags->map->only(['id', 'name'])->values(),
+            'published' => $this->is_published === 1 ? true : false,
             'created_at' => (new \DateTime($this->created_at))->format('Y-m-d H:i:s'),
             'updated_at' => (new \DateTime($this->updated_at))->format('Y-m-d H:i:s')
         ];

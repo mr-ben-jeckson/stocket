@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white p-4 rounded-lg shadow">
+    <div class="bg-white p-4 rounded-lg shadow animate-fade-in-down">
         <div class="flex justify-between border-b-2 pb-3">
             <div class="flex items-center">
                 <span class="whitesapce-nowrap mr-3">
@@ -61,13 +61,20 @@
                 <tr v-for="product of products.data" :key="product.id">
                     <td class="border-b p-2">{{ product.id }}</td>
                     <td class="border-b p-2">
-                        <img :src="product.images" class="w-16 h-12 object-cover" :alt="product.title">
+                        <img :src="product.images"
+                            class="w-16 h-12 object-cover"
+                            :alt="product.title">
                     </td>
-                    <td class="border-b p-2 max-w-0 whitespace-nowrap overflow-hidden text-ellipsis">
+                    <td class="border-b p-2 max-w-0 whitespace-nowrap
+                            overflow-hidden text-ellipsis">
                         {{ product.title }}
                     </td>
-                    <td class="border-b p-2">{{ product.price }}</td>
-                    <td class="border-b p-2">{{ product.updated_at }}</td>
+                    <td class="border-b p-2">
+                            {{ product.price }}
+                    </td>
+                    <td class="border-b p-2">
+                             {{ product.updated_at }}
+                    </td>
                     <td class="border-b p-2">
                         <Menu as="div" class="relative inline-block text-left">
                             <div>
@@ -86,7 +93,7 @@
                                 leave-from-class="transform scale-100 opacity-100"
                                 leave-to-class="transform scale-95 opacity-0">
                                 <MenuItems
-                                    class="absolute z-10 right-0 mt-2 w-32 origin-top-right divide-y divide-gray-100 rounded-md
+                                    class="absolute right-0 mt-2 w-32 origin-top-right divide-y divide-gray-100 rounded-md
                                                 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                     <div class="px-1 py-1">
                                         <MenuItem v-slot="{ active }">

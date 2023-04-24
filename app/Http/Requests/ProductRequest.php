@@ -25,7 +25,7 @@ class ProductRequest extends FormRequest
     {
         return [
             'title' => ['required', 'max:2000'],
-            'image' => ['required', 'array'],
+            'image' => ['nullable', 'array'],
             'price' => ['required', 'numeric'],
             'description' => ['nullable', 'string'],
             'tag' => ['nullable', 'array'],

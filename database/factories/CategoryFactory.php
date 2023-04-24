@@ -17,7 +17,7 @@ class CategoryFactory extends Factory
     public function definition()
     {
         return [
-            'name' => fake()->name(),
+            'name' => fake()->randomElement(['Electronic', 'Lighting', 'Computer Accessories', 'Electric Motors', 'Laptops']),
             'type' => fake()->randomElement(['main','sub','child']),
             'nested' => fake()->randomElement([0, 1, 2]),
             'locale' => json_encode(['mm' => fake()->randomElement(['အစားအစာခြောက်','အီလက်ထရောနစ်', 'နည်းပညာ']), 'en' => fake()->name()])

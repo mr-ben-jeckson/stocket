@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductListsResource;
 use App\Http\Resources\ProductResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -58,7 +57,7 @@ class ProductController extends Controller
         }
 
         // DB images json structure
-        $data['images'] = json_encode(($objectArray));
+        $data['images'] = json_encode($objectArray);
 
         //Product Model Saving
         $product = Product::create([
@@ -98,7 +97,29 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, Product $product)
     {
-        $product->update($request->validated());
+        $data = $request->validated();
+        $data['updated_by'] = $request->user()->id;
+        $data['is_published'] = $data['published'];
+        $imagesArray = json_decode($product->images) ?? array();
+        // File Saving to Storage
+        if($request->hasFile('image')) {
+            foreach($request->file('image') as /** @var \Illuminate\Http\UploadedFile $image */ $image) {
+                // saving image
+                $relativePath = $this->saveImage($image);
+                // object map needs four arguments
+                $object = $this->imageObjectMap(URL::to(Storage::url($relativePath)), $image->getClientMimeType(), $relativePath, $image->getSize());
+                array_push($imagesArray, $object);
+            }
+            $reindexImagesObjectArray = array_values($imagesArray);
+            $data['images'] = json_encode($reindexImagesObjectArray);
+        }
+
+        //Sync of Tags and Categories via Pivot Tables
+        if(isset($data['category'])) $product->categories()->sync($data['category']);
+        if(isset($data['tag'])) $product->tags()->sync($data['tag']);
+
+        $product->update($data);
+
         return new ProductResource($product);
     }
 
@@ -122,19 +143,6 @@ class ProductController extends Controller
         $product->delete();
 
         return response()->noContent();
-    }
-
-    private function saveImage(\Illuminate\Http\UploadedFile $image) {
-        $path = 'images/' . Str::random();
-        if(!Storage::exists($path)) {
-            Storage::makeDirectory($path, 0755, true);
-
-        }
-        if(!Storage::putFileAs('public/'.$path, $image, $image->getClientOriginalName())) {
-            throw new \Exception("Unable to save \"{$image->getClientOriginalName()}\"");
-        }
-
-        return $path. '/' . $image->getClientOriginalName();
     }
 
     public function singleImageRemove(Request $request) {
@@ -169,11 +177,10 @@ class ProductController extends Controller
 
             //delete from storage
             if(Storage::exists('public/'.$itemImage->storage)) {
-                Storage::delete('public/'.$itemImage->storage);
+                Storage::deleteDirectory('public/'.dirname($itemImage->storage));;
             } else {
                 //avoid faker data
                 if($itemImage->storage == "faker/fake.png" || $itemImage->storage == "faker/fake.jpg") {
-                //passed
                 } else {
                     throw new \Exception("Unable to delete \"{$itemImage->storage} file not removed\"");
                 }
@@ -194,6 +201,26 @@ class ProductController extends Controller
         } else {
             return response(json_decode($product->image), 200);
         }
+    }
+
+    private function folderNameFormat() {
+        $unqiue = uniqid();
+        $timestamp = now()->getTimestampMs();
+        $date = str_replace([' ', ':', '+'], '', now()->toString());
+        return $unqiue.'-'.$timestamp.$date;
+    }
+
+    private function saveImage(\Illuminate\Http\UploadedFile $image) {
+        $path = 'images/'.$this->folderNameFormat();
+        if(!Storage::exists($path)) {
+            Storage::makeDirectory($path, 0755, true);
+
+        }
+        if(!Storage::putFileAs('public/'.$path, $image, $image->getClientOriginalName())) {
+            throw new \Exception("Unable to save \"{$image->getClientOriginalName()}\"");
+        }
+
+        return $path. '/' . $image->getClientOriginalName();
     }
 
     private function imageObjectMap($url, $mine, $storage, $size) {

@@ -89,7 +89,7 @@
                         </div>
                         <div class="w-auto px-2 mb-5 mt-5">
                             <span class="p-float-label">
-                                <InputNumber id="price" v-model="product.price" inputId="stacked-buttons" :min="0.00" showButtons mode="currency" currency="USD" class="w-full" />
+                                <InputNumber id="price" v-model=product.price inputId="stacked-buttons" :min="0.00" showButtons mode="currency" currency="USD" class="w-full" />
                                 <label for="price">Product Price</label>
                             </span>
                         </div>
@@ -150,12 +150,13 @@ import store from '../../store';
 
 const isLoading = ref(false);
 const filesSelector = ref(null);
+const updateImages = ref([]);
 const product = ref({
     id: props.product.id,
     title: props.product.title,
     image: props.product.image,
     description: props.product.description,
-    price: props.product.price,
+    price: Number(props.product.price),
     category: props.product.category,
     tag: props.product.tag,
     published: props.product.published
@@ -163,6 +164,11 @@ const product = ref({
 
 const category = computed(() => store.state.category.data);
 const tag = computed(() => store.state.tag.data);
+
+const show = computed({
+    get: () => props.modelValue,
+    set: (value) => emit('update:modelValue', value)
+})
 
 const props = defineProps({
     modelValue: Boolean,
@@ -175,7 +181,8 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue']);
 
 function closeForm() {
-    props.modelValue = false;
+    show.value = false;
+    filesSelector.value.clear();
     emit('update:modelValue');
 }
 
@@ -183,9 +190,9 @@ watchEffect(() => {
     product.value = {
         id: props.product.id,
         title: props.product.title,
-        image: props.product.image,
+        image: props.product.images,
         description: props.product.description,
-        price: props.product.price,
+        price: Number(props.product.price),
         category: props.product.category,
         tag: props.product.tag,
         published: props.product.published
@@ -221,7 +228,12 @@ const totalSize = ref(0);
 const files = ref([]);
 
 const onAdvancedUpload = (e) => {
-    product.value.image = Array.from(e.files);
+    //update
+    if(props.product.id) {
+        updateImages.value = Array.from(e.files);
+    } else {
+        product.value.image = Array.from(e.files);
+    }
     files.value = e.files;
     files.value.forEach((file) => {
         totalSize.value += parseInt(formatSize(file.size));
@@ -234,7 +246,11 @@ const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
 };
 
 function selectFileClear() {
-    product.value.image = [];
+    if(props.product.id) {
+        updateImages.value = [];
+    } else {
+        product.value.image = [];
+    }
 }
 
 const toast = useToast();
@@ -272,33 +288,55 @@ function onSubmit() {
     } else if(!product.value.price || product.value.price < 0.00) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Price must be greater than 0.0', life: 3000 });
         return;
-    } else if(!product.value.image || product.value.image.length == 0) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Product must has an image atleast', life: 3000 });
-        return;
     }
-    isLoading.value = true;
-    toast.add({ severity: 'info', summary: 'Info', detail: 'Product is being saved'});
 
     const productObj = {
-        'title' : product.value.title,
-        'image' : product.value.image,
-        'description' : product.value.description,
-        'category' : product.value.category ? product.value.category.map(item => item.id) : undefined,
-        'tag': product.value.tag ? product.value.tag.map(item => item.id) : undefined,
-        'price' : product.value.price,
-        'published' : product.value.published === true ? 1 : 0
-    }
+    'title': product.value.title,
+    'description' : product.value.description,
+    'category' : product.value.category ? product.value.category.map(item => item.id) : undefined,
+    'tag': product.value.tag ? product.value.tag.map(item => item.id) : undefined,
+    'price' : product.value.price,
+    'published' : product.value.published === true ? 1 : 0
+    };
 
-    store.dispatch('createProduct', productObj)
-            .then(response => {
-                isLoading.value = false;
-                toast.removeAllGroups();
-                if (response.status === 201) {
-                    toast.add({ severity: 'success', summary: 'Success', detail: 'Product was added', life: 3000 })
-                    filesSelector.value.clear();
-                    closeForm();
-                    store.dispatch('getProducts');
-                }
-            })
+    const createProductObj = {
+        ...productObj,
+        'image': product.value.image
+    };
+
+    const updateProductObj = {
+        ...productObj,
+        'id': product.value.id,
+        'image': updateImages.value
+    };
+
+    isLoading.value = true;
+    if(props.product.id) {
+        toast.add({ severity: 'info', summary: 'Info', detail: 'Product is being updated'});
+        store.dispatch('updateProduct', updateProductObj)
+                .then(response => {
+                    isLoading.value = false;
+                    toast.removeAllGroups();
+                    if (response.status === 200) {
+                        toast.add({ severity: 'success', summary: 'Success', detail: 'Product was updated', life: 3000 })
+                        filesSelector.value.clear();
+                        closeForm();
+                        store.dispatch('getProducts');
+                    }
+                })
+    } else {
+        toast.add({ severity: 'info', summary: 'Info', detail: 'Product is being saved'});
+        store.dispatch('createProduct', createProductObj)
+                .then(response => {
+                    isLoading.value = false;
+                    toast.removeAllGroups();
+                    if (response.status === 201) {
+                        toast.add({ severity: 'success', summary: 'Success', detail: 'Product was added', life: 3000 })
+                        filesSelector.value.clear();
+                        closeForm();
+                        store.dispatch('getProducts');
+                    }
+                })
+    }
 }
 </script>
