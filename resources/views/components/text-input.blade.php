@@ -3,7 +3,7 @@
 @php
     $errorClasses = 'border-red-600 focus:border-red-600 ring-1 ring-red-600 focus:ring-red-600';
     $defaultClasses = '';
-    $successClasses = 'border-emerald-600 focus:border-emerald-600 ring-1 ring-emerald-600 focus:ring-emerald-600'
+    $successClasses = 'border-blue-600 focus:border-blue-600 ring-1 ring-blue-600 focus:ring-blue-600'
 @endphp
 
 @if ($label)

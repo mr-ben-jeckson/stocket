@@ -1,4 +1,7 @@
 <x-app-layout>
+    <x-slot name="meta">
+        <x-meta :title="__('Login')" :description="__('Login Form')" />
+    </x-slot>
     <form method="POST" action="{{ route('login') }}" class="w-[400px] mx-auto p-6 my-16">
         @csrf
         <h2 class="text-2xl font-semibold text-center mb-5">
@@ -39,8 +42,8 @@
             <a href="{{ route('password.request')}}" class="text-sm text-yellow-600 hover:text-black">Forgot
                 Password?</a>
         </div>
-        <button class="btn-primary bg-red-600 hover:bg-red-500 active:bg-red-700 w-full">
+        <x-primary-button>
             Login
-        </button>
+        </x-primary-button>
     </form>
 </x-app-layout>
