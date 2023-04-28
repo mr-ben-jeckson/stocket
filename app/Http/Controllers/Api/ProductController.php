@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
+use App\Models\Api\Product;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductListsResource;
 use App\Http\Resources\ProductResource;
@@ -129,7 +129,7 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request,\App\Models\Product  $product)
+    public function destroy(Request $request, Product $product)
     {
         // adding deleted by
         $product->update([

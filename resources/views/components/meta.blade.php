@@ -18,7 +18,7 @@
 <meta property="twitter:card" content="summary_large_image">
 <meta property="twitter:url" content="{{ url()->current() }}">
 <meta property="twitter:title" content="{{ $title ? $title : __('No title')}}">
-<meta property="twitter:description" content="{{ $description ? $description : __('No description')}}">
+<meta property="twitter:description" content="{{ $description ? $description: __('No description')}}">
 <meta property="twitter:image" content="">
 
 {{$slot}}

@@ -21,7 +21,7 @@
                     placeholder="Enter Keywords to search products">
             </div>
         </div>
-        <table class="overflow-scroll w-full">
+        <table class="w-full">
             <thead>
                 <tr>
                     <TableHeadingColumns @click="sortProduct" class="border-b-2 p-2 text-right w-[10%]" field="id"
@@ -93,7 +93,7 @@
                                 leave-from-class="transform scale-100 opacity-100"
                                 leave-to-class="transform scale-95 opacity-0">
                                 <MenuItems
-                                    class="absolute right-0 mt-2 w-32 origin-top-right divide-y divide-gray-100 rounded-md
+                                    class="absolute z-30 right-0 mt-2 w-32 origin-top-right divide-y divide-gray-100 rounded-md
                                                 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                     <div class="px-1 py-1">
                                         <MenuItem v-slot="{ active }">
@@ -124,12 +124,12 @@
                 </tr>
             </tbody>
         </table>
-        <div v-if="!products.loading" class="flex justify-between items-center mt-5">
+        <div v-if="!products.loading" class="flex justify-between items-center mt-5 z-0 ">
                 <span>
                     Showing from {{ products.from }} to {{ products.to }}
                 </span>
                 <nav v-if="products.total > products.limit"
-                    class="relative z-0 inline-flex justify-center rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    class="relative inline-flex justify-center rounded-md shadow-sm -space-x-px" aria-label="Pagination">
                     <a href="#" v-for="(link, i) of products.links" :key="i" :disabled="!link.url"
                         @click.prevent="getPage($event, link)" aria-current="page"
                         class="relative inline-flex items-center px-4 py-2 border text-sm font-medium whitespace-nowrap" :class="[

@@ -285,7 +285,7 @@
     </button>
 </header>
 {{-- Laptop Tablet and Large Screen Nav --}}
-<header class="max-sm:hidden md:block sticky top-0 bg-white z-10 ">
+<header class="max-sm:hidden md:block relative bg-white z-10 ">
     <div class="flex justify-center items-center w-full">
         <a href="{{ route('home') }}">
             <x-logo-layout/>

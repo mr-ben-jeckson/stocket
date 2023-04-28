@@ -8,11 +8,11 @@
             <div class="border border-1 shadow border-gray-200 hover:shadow-red-600 rounded-md hover:border-red-500 transition-colors bg-white animate-fade-in-down">
                 <div class="p-2 rounded-lg">
                     <div class="relative w-full overflow-hidden bg-cover bg-no-repeat block aspect-w-4 aspect-h-3">
-                        <a href="{{url('/product/'.$product->slug)}}">
+                        <a href="{{ route('product.detail', $product->slug) }}">
                         <img
                           src="{{ json_decode($product->images)[0]->url }}"
                           class="w-full transition duration-300 ease-in-out hover:scale-110 object-cover"
-                          alt="{{ $product->slug }}" />
+                          alt="{{ route('product.detail', $product->slug) }}" />
                         </a>
                     </div>
                 </div>
