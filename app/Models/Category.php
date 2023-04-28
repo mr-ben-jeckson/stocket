@@ -10,4 +10,8 @@ class Category extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
+    public function children() {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
 }

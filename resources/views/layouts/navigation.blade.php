@@ -26,14 +26,66 @@
                     <i x-show="!open" class="fa fa-chevron-right mx-2 my-auto"></i>
                 </a>
                 <ul x-show="open" x-transition class="z-10 right-0 bg-red-600 rounded mx-2 text-white py-2">
-                    <li class="hover:bg-black/10">
-                        <a href="#" class="flex px-3 py-2">
-                            Categories
-                        </a>
+                    <li class="hover:bg-black/10 px-3 py-2">
+                        <div x-data="{ show: false, menu: false, sub: false }" class="overflow-x-auto">
+                            <a href="#" x-on:click="show = ! show">Categories</a>
+                            <div class="relative">
+                                <div class="bg-red-600 rounded-md p-3 w-full relative z-10" x-show="show"
+                                    x-cloak
+                                    @click.away="show = false" x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="transform opacity-0 scale-95">
+                                    <ul
+                                        class="[&>li]:text-white [&>li]:cursor-pointer [&>li]:px-2 [&>li]:py-1 [&>li]:rounded-md [&>li]:transition-all hover:[&>li]:bg-black/10 active:[&>li]:bg-black/10 active:[&>li]:scale-[0.99]">
+                                        @foreach ($categories as $main)
+                                            <li @if ($main->children->count() > 0)
+                                                class="flex items-center justify-between"
+                                            @endif >
+                                            <a href="">{{ $main->name }}</a>
+                                            @if ($main->children->count() > 0)
+                                                <i x-on:click="menu = !menu" :class="menu ? 'fa fa-minus' : 'fa fa-plus'"></i>
+                                            @endif
+                                            </li>
+                                            @if ($main->children->count() > 0)
+                                            <div class="bg-red-600 rounded-md w-full relative"
+                                                x-show="menu" x-transition:enter="transition ease-out duration-100"
+                                                x-transition:enter-start="transform opacity-0 scale-95">
+                                                @foreach ($main->children as $key=>$child)
+                                                    <div x-data="{sub: false}"
+                                                        class="[&>li]:text-white [&>li]:text-sm [&>li]:cursor-pointer [&>li]:px-2 [&>li]:py-1 [&>li]:rounded-md [&>li]:transition-all hover:[&>li]:bg-black/10 active:[&>li]:bg-black/10 active:[&>li]:scale-[0.99]"
+                                                        >
+                                                        <li @if ($child->children->count() > 0)
+                                                            class="flex items-center justify-between"
+                                                        @endif
+                                                        > <a href="#"> <i class="fas fa-circle-chevron-right text-sm"></i> {{ $child->name }} </a>
+                                                            @if ($child->children->count() > 0)
+                                                            <i x-on:click="sub = !sub" :class="sub ? 'fa fa-minus' : 'fa fa-plus'" @click.away="sub = false" class="text-sm"></i>
+                                                            @endif
+                                                        </li>
+                                                        @if ($child->children->count() > 0)
+                                                            <div class="bg-red-600 rounded-md w-full relative [&>li]:text-white [&>li]:text-sm [&>li]:cursor-pointer [&>li]:px-2 [&>li]:py-1 [&>li]:rounded-md [&>li]:transition-all hover:[&>li]:bg-black/10 active:[&>li]:bg-black/10 active:[&>li]:scale-[0.99]"
+                                                                x-show="sub" x-transition:enter="transition ease-out duration-100"
+                                                                x-transition:enter-start="transform opacity-0 scale-95">
+                                                                @foreach ($child->children as $item)
+                                                                    <li><a href="#">
+                                                                        <i class="fas fa-circle-chevron-right text-sm"></i>
+                                                                        <i class="fas fa-circle-chevron-right text-sm"></i>
+                                                                        {{ $item->name }}</a></li>
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            @endif
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </li>
                     <li class="hover:bg-black/10">
-                        <a href="#" class="flex items-center px-3 py-2">
-                            New Products
+                        <a href="{{ route('products') }}" class="flex items-center px-3 py-2">
+                            Products
                         </a>
                     </li>
                     <li class="hover:bg-black/10">
@@ -101,21 +153,24 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="flex items-center px-3 py-2 transition-colors hover:bg-black/10">
+                        <form action="{{ route('logout')}}" method="POST">
+                        @csrf
+                        <button type="submit" class="flex items-center px-3 py-2 transition-colors hover:bg-black/10">
                             <i class="fas fa-right-from-bracket my-auto mx-2"></i>
                             Logout
-                        </a>
+                        </button>
+                        </form>
                     </li>
                 </ul>
             </li>
             <li>
-                <a href="#" class="flex items-center py-2 px-3 mx-2 rounded transition-colors hover:bg-red-600 hover:text-white">
+                <a href="{{ route('login') }}" class="flex items-center py-2 px-3 mx-2 rounded transition-colors hover:bg-red-600 hover:text-white">
                     <i class="fas fa-key mx-2 my-auto"></i>
                     Login
                 </a>
             </li>
             <li class="px-3 py-3">
-                <a href="#"
+                <a href="{{ route('register') }}"
                     class="block text-center text-white bg-red-600 py-2 px-3 rounded shadow-md hover:bg-red-700 active:bg-red-500 transition-colors w-full">
                     Create Account
                 </a>
@@ -144,7 +199,7 @@
                     <i class="fas fa-chevron-down text-red-600 ml-2"></i>
                 </a>
                 <ul @click.outside="open = false" x-show="open" x-transition x-cloak
-                    class="absolute z-10 right-0 bg-white w-48 shadow">
+                    class="absolute z-30 right-0 bg-white w-48 shadow">
                     <li>
                         <a href="/src/profile.html" class="flex px-3 py-2 hover:bg-black/10">
                             <i class="fas fa-user mx-2 text-red-600 my-auto"></i>
@@ -180,13 +235,13 @@
                         </form>
                     </li>
                     <li>
-                        <a href="/src/logout.html" class="flex px-3 py-2 hover:bg-black/10">
+                        <a href="{{ route('login') }}" class="flex px-3 py-2 hover:bg-black/10">
                             <i class="fas fa-key text-red-600 mx-2 my-auto"></i>
                             Login
                         </a>
                     </li>
                     <li>
-                        <a href="/src/logout.html" class="flex px-3 py-2 hover:bg-black/10">
+                        <a href="{{ route('register') }}" class="flex px-3 py-2 hover:bg-black/10">
                             <i class="fas fa-user-plus text-red-600 mx-2 my-auto"></i>
                             Create Account
                         </a>
@@ -231,7 +286,7 @@
     </button>
 </header>
 {{-- Laptop Tablet and Large Screen Nav --}}
-<header class="max-sm:hidden md:block">
+<header class="max-sm:hidden md:block sticky top-0 bg-white z-10 ">
     <div class="flex justify-center items-center w-full">
         <img src="https://i.ibb.co/4tNnQ4q/Logopit-1682432874060.png" class="w-[150px] h-[110px] object-cover"
             alt="">
@@ -242,25 +297,65 @@
                 <a href="#" class="relative inline-flex items-center px-5 py-2 hover:bg-black/10"> Home </a>
             </li>
             <li>
-                <a href="#" class="relative peer inline-flex items-center px-5 py-2 hover:bg-black/10">
-                    Categories </a>
-                <div
-                    class="hidden absolute z-20 peer-hover:flex hover:flex
-                        w-[200px]
-                        flex-col bg-red-600 text-white drop-shadow-lg">
-                    <a class="px-5 py-3 hover:bg-black/10" href="#">Auto Mobile</a>
-                    <a class="px-5 py-3 hover:bg-black/10" href="#">Agricultural</a>
-                    <a class="px-5 py-3 hover:bg-black/10" href="#">Book</a>
-                    <a class="px-5 py-3 hover:bg-black/10" href="#">Cosmetic</a>
-                    <a class="px-5 py-3 hover:bg-black/10" href="#">Electronic</a>
-                    <a class="px-5 py-3 hover:bg-black/10" href="#">Food</a>
-                    <a class="px-5 py-3 hover:bg-black/10" href="#">Fashion</a>
-                    <a class="px-5 py-3 hover:bg-black/10" href="#">IT Products</a>
-                    <a class="px-5 py-3 hover:bg-black/10" href="#">Treasure</a>
+                <div x-data="{ show: false, menu: false, sub: false }" class="overflow-x-auto">
+                    <a class="relative cursor-pointer inline-flex items-center text-white px-5 py-2 hover:bg-black/10"
+                        x-on:click="show = ! show" >Categories</a>
+                    <div class="absolute">
+                        <div class="bg-red-600 rounded-md p-3 min-w-[240px] top-1 w-full absolute z-10" x-show="show"
+                            x-cloak
+                            @click.away="show = false" x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="transform opacity-0 scale-95">
+                            <ul
+                                class="[&>li]:text-white [&>li]:cursor-pointer [&>li]:px-2 [&>li]:py-1 [&>li]:rounded-md [&>li]:transition-all hover:[&>li]:bg-black/10 active:[&>li]:bg-black/10 active:[&>li]:scale-[0.99]">
+                                @foreach ($categories as $main)
+                                    <li @if ($main->children->count() > 0)
+                                        class="flex items-center justify-between"
+                                    @endif >
+                                    <a href="">{{ $main->name }}</a>
+                                    @if ($main->children->count() > 0)
+                                        <i x-on:click="menu = !menu" :class="menu ? 'fa fa-minus' : 'fa fa-plus'"></i>
+                                    @endif
+                                    </li>
+                                    @if ($main->children->count() > 0)
+                                    <div class="bg-red-600 rounded-md max-w-[240px] w-full relative"
+                                        x-show="menu" x-transition:enter="transition ease-out duration-100"
+                                        x-transition:enter-start="transform opacity-0 scale-95">
+                                        @foreach ($main->children as $key=>$child)
+                                            <div x-data="{sub: false}"
+                                                class="[&>li]:text-white [&>li]:text-sm [&>li]:cursor-pointer [&>li]:px-2 [&>li]:py-1 [&>li]:rounded-md [&>li]:transition-all hover:[&>li]:bg-black/10 active:[&>li]:bg-black/10 active:[&>li]:scale-[0.99]"
+                                                >
+                                                <li @if ($child->children->count() > 0)
+                                                    class="flex items-center justify-between"
+                                                @endif
+                                                > <a href="#"> <i class="fas fa-circle-chevron-right text-sm"></i> {{ $child->name }} </a>
+                                                    @if ($child->children->count() > 0)
+                                                    <i x-on:click="sub = !sub" :class="sub ? 'fa fa-minus' : 'fa fa-plus'" @click.away="sub = false" class="text-sm"></i>
+                                                    @endif
+                                                </li>
+                                                @if ($child->children->count() > 0)
+                                                    <div class="bg-red-600 rounded-md max-w-[220px] w-full relative [&>li]:text-white [&>li]:text-sm [&>li]:cursor-pointer [&>li]:px-2 [&>li]:py-1 [&>li]:rounded-md [&>li]:transition-all hover:[&>li]:bg-black/10 active:[&>li]:bg-black/10 active:[&>li]:scale-[0.99]"
+                                                        x-show="sub" x-transition:enter="transition ease-out duration-100"
+                                                        x-transition:enter-start="transform opacity-0 scale-95">
+                                                        @foreach ($child->children as $item)
+                                                            <li><a href="#">
+                                                                <i class="fas fa-circle-chevron-right text-sm"></i>
+                                                                <i class="fas fa-circle-chevron-right text-sm"></i>
+                                                                {{ $item->name }}</a></li>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </li>
             <li>
-                <a href="#" class="relative inline-flex items-center px-5 py-2 hover:bg-black/10"> New Products
+                <a href="{{ route('products') }}" class="relative inline-flex items-center px-5 py-2 hover:bg-black/10"> Products
                 </a>
             </li>
             <li>

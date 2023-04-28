@@ -24,4 +24,4 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function() {
     Route::apiResource('/tag', TagController::class);
 });
 
-Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login']);
+Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
