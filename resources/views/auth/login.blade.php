@@ -2,7 +2,8 @@
     <x-slot name="meta">
         <x-meta :title="__('Login')" :description="__('Login Form')" />
     </x-slot>
-    <form method="POST" action="{{ route('login') }}" class="w-[400px] mx-auto p-6 my-16">
+    <div class="card max-w-[400px] md:w-1/2 sm:w-3/4 mx-auto my-auto py-20 px-10 shadow-sm rounded-sm m-3">
+    <form method="POST" action="{{ route('login') }}">
         @csrf
         <h2 class="text-2xl font-semibold text-center mb-5">
             Login to your account
@@ -46,4 +47,5 @@
             Login
         </x-primary-button>
     </form>
+    </div>
 </x-app-layout>

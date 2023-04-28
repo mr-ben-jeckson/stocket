@@ -1,8 +1,11 @@
-<x-guest-layout>
+<x-app-layout>
+    <x-slot name="meta">
+        <x-meta :title="__('Forgot Password')" :description="__('Stocket Reset Password Request')" />
+    </x-slot>
     <div class="mb-4 text-sm text-gray-600">
         {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
     </div>
-
+    <div class="card max-w-[400px] md:w-1/2 sm:w-3/4 mx-auto my-auto py-20 px-10 shadow-sm rounded-sm m-3">
     <form method="POST" action="{{ route('password.confirm') }}">
         @csrf
 
@@ -24,4 +27,5 @@
             </x-primary-button>
         </div>
     </form>
-</x-guest-layout>
+    </div>
+</x-app-layout>

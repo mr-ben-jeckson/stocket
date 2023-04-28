@@ -10,9 +10,8 @@
         :class="mobileMenuOpen ? 'left-0' : '-left-[220px]'">
         <ul class="grid grid-flow-row items-center">
             <li>
-                <a href="#" class="flex justify-center items-center py-3">
-                    <img src="https://i.ibb.co/4tNnQ4q/Logopit-1682432874060.png"
-                        class="w-[150px] h-[110px] object-cover" alt="">
+                <a href="{{ route('home') }}" class="flex justify-center items-center py-3">
+                    <x-logo-layout />
                 </a>
             </li>
             <li x-data="{ open: true }" class="relative">
@@ -288,8 +287,9 @@
 {{-- Laptop Tablet and Large Screen Nav --}}
 <header class="max-sm:hidden md:block sticky top-0 bg-white z-10 ">
     <div class="flex justify-center items-center w-full">
-        <img src="https://i.ibb.co/4tNnQ4q/Logopit-1682432874060.png" class="w-[150px] h-[110px] object-cover"
-            alt="">
+        <a href="{{ route('home') }}">
+            <x-logo-layout/>
+        </a>
     </div>
     <nav class="flex justify-center items-center overflow-x-auto bg-red-600 text-white mx-5 my-2 shadow">
         <ul class="grid grid-flow-col items-center py-2">

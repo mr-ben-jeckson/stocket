@@ -2,7 +2,6 @@
 
 namespace App\View\Components;
 
-use App\Models\Category;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
@@ -13,9 +12,6 @@ class AppLayout extends Component
      */
     public function render(): View
     {
-        $categories = Category::where('nested', '=', 0)->get();
-        return view('layouts.app', [
-            'categories' => $categories
-        ]);
+        return view('layouts.app');
     }
 }

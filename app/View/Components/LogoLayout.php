@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class Meta extends Component
+class LogoLayout extends Component
 {
     /**
      * Create a new component instance.
@@ -13,7 +13,7 @@ class Meta extends Component
      */
     public function __construct()
     {
-        //
+
     }
 
     /**
@@ -23,6 +23,9 @@ class Meta extends Component
      */
     public function render()
     {
-        return view('components.meta');
+        $logo = 'https://i.ibb.co/4tNnQ4q/Logopit-1682432874060.png';
+        return view('components.logo-layout', [
+            'logo' => $logo
+        ]);
     }
 }

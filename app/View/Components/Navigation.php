@@ -2,9 +2,11 @@
 
 namespace App\View\Components;
 
+use App\Models\Category;
 use Illuminate\View\Component;
+use Illuminate\View\View;
 
-class Meta extends Component
+class Navigation extends Component
 {
     /**
      * Create a new component instance.
@@ -13,7 +15,7 @@ class Meta extends Component
      */
     public function __construct()
     {
-        //
+
     }
 
     /**
@@ -21,8 +23,11 @@ class Meta extends Component
      *
      * @return \Illuminate\Contracts\View\View|\Closure|string
      */
-    public function render()
+    public function render(): View
     {
-        return view('components.meta');
+        $categories = Category::where('nested', '=', 0)->get();
+        return view('layouts.navigation', [
+            'categories' => $categories
+        ]);
     }
 }
