@@ -132,6 +132,7 @@
                             </tbody>
                         </table> --}}
                         <p class="text-gray-500">
+                            <h2 class="text-lg font-bold text-black">About Product</h2>
                             {{ $product->description }}
                         </p>
                     </div>

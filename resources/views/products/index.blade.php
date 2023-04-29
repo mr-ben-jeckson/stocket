@@ -17,8 +17,8 @@
                     </div>
                 </div>
                 <div class="p-4">
-                    <h3 class="text-lg">
-                        <a href="/src/product.html">
+                    <h3 class="text-lg text-gray-500">
+                        <a href="{{ route('product.detail', $product->slug)}}">
                             {{ Str::limit($product->title, 130, '...') }}
                         </a>
                     </h3>
