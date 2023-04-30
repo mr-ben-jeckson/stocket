@@ -22,6 +22,7 @@ class ProductResource extends JsonResource
             'slug' => $this->slug,
             'description' => $this->description,
             'image' => json_decode($this->images),
+            'features' => json_decode($this->features),
             'price' => $this->price,
             'category' => $this->categories->map->only(['id', 'name'])->values(),
             'tag' => $this->tags->map->only(['id', 'name'])->values(),

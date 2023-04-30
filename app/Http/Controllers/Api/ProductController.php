@@ -65,6 +65,7 @@ class ProductController extends Controller
         $product = Product::create([
             'title' => $data['title'],
             'images' => $data['images'],
+            'features' => json_encode($data['features']),
             'description' => $data['description'],
             'price' => $data['price'],
             'is_published' => $data['published'],
@@ -121,7 +122,7 @@ class ProductController extends Controller
         //Sync of Tags and Categories via Pivot Tables
         if (isset($data['category'])) $product->categories()->sync($data['category']);
         if (isset($data['tag'])) $product->tags()->sync($data['tag']);
-
+        $data['features'] = json_encode($data['features']);
         $product->update($data);
 
         return new ProductResource($product);

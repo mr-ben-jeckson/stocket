@@ -28,10 +28,10 @@ class ProductFactory extends Factory
 
     private function fakeFeatureObject() {
         $object = (object) [
-            'id' => uniqid(),
-            'title' => fake()->word(),
+            'head' => fake()->word(),
             'text' => fake()->unique()->word()
         ];
+        return $object;
     }
 
     public function definition()

@@ -28,6 +28,7 @@ class ProductRequest extends FormRequest
             'image' => ['nullable', 'array'],
             'price' => ['required', 'numeric'],
             'description' => ['nullable', 'string'],
+            'features' => ['nullable', 'array'],
             'tag' => ['nullable', 'array'],
             'category' => ['nullable', 'array'],
             'published' => ['nullable', 'boolean']

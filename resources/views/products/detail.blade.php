@@ -104,33 +104,27 @@
                     <i class="fas fa-shopping-cart my-auto mr-3"></i>
                     Add to Cart
                 </button>
+                <div class="my-3">
+                    <table class="w-full">
+                        <thead>
+                            <tr>
+                                <td colspan="2" class="w-full">
+                                    <h2 class="text-lg font-bold text-black">Features</h2>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (json_decode($product->features) as $feature)
+                            <tr class="border-b border-b-gray-200">
+                                <td class="font-semibold w-[50%]">{{ $feature->head }}</td>
+                                <td class="text-gray-500 w-[50%]">{{ $feature->text }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
                 <div class="mb-6" x-data="{ expanded: false }">
                     <div x-show="expanded" x-collapse.min.120px class="text-gray-500 wysiwyg-content">
-                        {{-- To make stock here --}}
-                        {{-- <table>
-                            <tbody>
-                                <tr>
-                                    <td>Connectivity Technology</td>
-                                    <td>USB</td>
-                                </tr>
-                                <tr>
-                                    <td>Recommended Uses For Product</td>
-                                    <td>Gaming</td>
-                                </tr>
-                                <tr>
-                                    <td>Brand</td>
-                                    <td>Logitech G</td>
-                                </tr>
-                                <tr>
-                                    <td>Compatible Devices</td>
-                                    <td>Personal Computer</td>
-                                </tr>
-                                <tr>
-                                    <td>Series</td>
-                                    <td>Logitech G502 HERO High Performance Gaming Mouse</td>
-                                </tr>
-                            </tbody>
-                        </table> --}}
                         <p class="text-gray-500">
                             <h2 class="text-lg font-bold text-black">About Product</h2>
                             {{ $product->description }}

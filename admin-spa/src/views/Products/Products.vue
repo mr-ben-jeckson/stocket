@@ -46,6 +46,12 @@ const defaultModel = {
     tag: [],
     category: [],
     published: true,
+    features: [
+        {
+            head: '',
+            text: '',
+        }
+    ]
 }
 const productModel = ref({
     ...defaultModel
