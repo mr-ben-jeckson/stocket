@@ -14,9 +14,7 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cartItems = Cart::getCartItems();
-        $ids = Arr::pluck($cartItems, 'product_id');
-        $products = Arr::keyBy($cartItems, 'product_id');
+        list($products, $cartItems) = Cart::getProductsAndCartItems();
         $total = 0;
         foreach ($products as $product) {
             $total += $product->price * $cartItems[$product->id]['quantity'];

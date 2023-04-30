@@ -24,7 +24,7 @@
     </main>
     <!-- Toast -->
     <div x-data="toast" x-show="visible" x-transition x-cloak @notify.window="show($event.detail.message)"
-        class="fixed z-40 w-[400px] left-1/2 -ml-[200px] top-16 py-2 px-4 pb-4 bg-yellow-600 text-white">
+        class="fixed z-40 w-[400px] left-1/2 -ml-[200px] bottom-16 py-2 px-4 pb-4 bg-yellow-600 text-white shadow-md rounded-md">
         <div class="font-semibold" x-text="message"></div>
         <button @click="close"
             class="absolute flex items-center justify-center right-2 top-2 w-[30px] h-[30px] rounded-full hover:bg-black/10 transition-colors text-white">
