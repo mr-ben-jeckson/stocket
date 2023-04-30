@@ -113,10 +113,10 @@
                         <i class="fas fa-shopping-cart px-2 my-auto"></i>
                         Cart
                     </div>
-                    <!-- Cart Items Counter -->
+                    {{-- <!-- Cart Items Counter -->
                     <small x-show="$store.header.cartItems" x-transition x-text="$store.header.cartItems"
                         class="py-[2px] px-[8px] rounded-full bg-red-500"></small>
-                    <!--/ Cart Items Counter -->
+                    <!--/ Cart Items Counter --> --}}
                 </a>
             </li>
             <li x-data="{ open: false }" class="relative">
@@ -140,9 +140,9 @@
                         <a href="#" class="flex items-center px-3 py-2 transition-colors hover:bg-black/10">
                             <i class="fas fa-heart my-auto mx-2"></i>
                             Watchlist
-                            <small x-show="$store.header.watchlistItems" x-transition
+                            {{-- <small x-show="$store.header.watchlistItems" x-transition
                                 x-text="$store.header.watchlistItems"
-                                class="py-[2px] px-[8px] rounded-full bg-red-500"></small>
+                                class="py-[2px] px-[8px] rounded-full bg-red-500"></small> --}}
                         </a>
                     </li>
                     <li>
@@ -184,8 +184,8 @@
                     class="relative inline-flex items-center py-navbar-item px-navbar-item hover:bg-black/10 hover:rounded-xl hover:py-3">
                     <i class="fas fa-cart-shopping mx-2 text-red-600"></i>
                     Cart
-                    <small x-show="$store.header.cartItems" x-transition x-cloak x-text="$store.header.cartItems"
-                        class="absolute z-[100] top-4 -right-3 py-[2px] px-[8px] rounded-full bg-red-500"></small>
+                    {{-- <small x-show="$store.header.cartItems" x-transition x-cloak x-text="$store.header.cartItems"
+                        class="absolute z-[100] top-4 -right-3 py-[2px] px-[8px] rounded-full bg-red-500"></small> --}}
                 </a>
             </li>
             <li x-data="{ open: false }" class="relative">
@@ -213,9 +213,9 @@
                                 Watchlist
                             </div>
 
-                            <small x-show="$store.header.watchlistItems" x-transition
+                            {{-- <small x-show="$store.header.watchlistItems" x-transition
                                 x-text="$store.header.watchlistItems"
-                                class="py-[2px] px-[8px] rounded-full bg-red-500"></small>
+                                class="py-[2px] px-[8px] rounded-full bg-red-500"></small> --}}
                         </a>
                     </li>
                     <li>

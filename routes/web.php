@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Public\CartController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -16,13 +17,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'home'])->name('home');
-Route::get('/products', [ProductController::class, 'index'])->name('products');
-Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name('product.detail');
+Route::middleware('guestOrVerified')->group(function(){
+    Route::get('/', [HomeController::class, 'home'])->name('home');
+    Route::get('/products', [ProductController::class, 'index'])->name('products');
+    Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name('product.detail');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    // Apline JS API routes for cart management
+    Route::prefix('/cart')->name('cart.')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('index');
+        Route::post('/add/{product:slug}', [CartController::class, 'add'])->name('add');
+        Route::post('/remove/{product:slug}', [CartController::class, 'remove'])->name('remove');
+        Route::post('/update-quantity/{product:slug}', [CartController::class, 'updateQuantity'])->name('update.quantity');
+    });
+});
+
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -4,13 +4,26 @@
     </x-slot>
     <div class="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-5">
         @foreach ($products as $product)
+            @php
+                $product['image'] = json_decode($product->images)[0]->url;
+            @endphp
             <!-- Product Item -->
-            <div class="border border-1 shadow border-gray-200 hover:shadow-red-600 rounded-md hover:border-red-500 transition-colors bg-white animate-fade-in-down">
+            <div
+                x-data="productItem({{
+                    json_encode([
+                        'id' => $product->id,
+                        'title' => $product->title,
+                        'image' => $product->image,
+                        'price' => $product->price,
+                        'addToCartUrl' => route('cart.add', $product)
+                    ])
+                }})"
+                class="border border-1 shadow border-gray-200 hover:shadow-red-600 rounded-md hover:border-red-500 transition-colors bg-white animate-fade-in-down">
                 <div class="p-2 rounded-lg">
                     <div class="relative w-full overflow-hidden bg-cover bg-no-repeat block aspect-w-4 aspect-h-3">
                         <a href="{{ route('product.detail', $product->slug) }}">
                         <img
-                          src="{{ json_decode($product->images)[0]->url }}"
+                          src="{{ $product->image }}"
                           class="w-full transition duration-300 ease-in-out hover:scale-110 object-cover"
                           alt="{{ route('product.detail', $product->slug) }}" />
                         </a>
@@ -31,13 +44,15 @@
                     {{-- <button class="btn-primary bg-red-600 hover:bg-red-500 active:bg-red-700">
                         Add to Cart
                     </button> --}}
-                    <a href="#_" class="relative inline-flex items-center px-6 py-2 overflow-hidden text-yellow-600 border-2 border-yellow-600 rounded-lg hover:border-red-600 hover:text-white group hover:bg-gray-50">
+                    <button
+                        @click="addToCart()"
+                        class="relative inline-flex items-center px-6 py-2 overflow-hidden text-yellow-600 border-2 border-yellow-600 rounded-lg hover:border-red-600 hover:text-white group hover:bg-gray-50">
                         <span class="absolute left-0 block w-full h-0 transition-all bg-red-600 opacity-100 group-hover:h-full top-1/2 group-hover:top-0 duration-400 ease"></span>
                         <span class="absolute right-0 flex items-center justify-start w-5 h-5 duration-300 transform translate-x-full group-hover:translate-x-0 ease">
                             <i class="fas fa-cart-plus"></i>
                         </span>
                         <span class="relative hover:text-white">Add to Cart</span>
-                    </a>
+                    </button>
                 </div>
             </div>
             <!--/ Product Item -->
