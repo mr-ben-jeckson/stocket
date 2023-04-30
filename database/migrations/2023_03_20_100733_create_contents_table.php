@@ -20,6 +20,7 @@ return new class extends Migration
             $table->longText('content');
             $table->boolean('searchable')->default(0);
             $table->boolean('published')->default(1);
+            $table->boolean('deleteable')->default(1);
             $table->foreignIdFor(User::class, 'created_by')->nullable();
             $table->foreignIdFor(User::class, 'updated_by')->nullable();
             $table->timestamps();

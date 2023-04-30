@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->references('id')->on('orders');
             $table->foreignId('product_id')->references('id')->on('products');
+            $table->string('size', 225)->nullable();
+            $table->string('color', 225)->nullable();
             $table->integer('quantity');
             $table->decimal('unit_price');
             $table->timestamps();

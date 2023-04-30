@@ -18,9 +18,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->references('id')->on('products');
             $table->string('size', 45)->nullable();
-            $table->json('colors')->nullable();
+            $table->json('color')->nullable();
             $table->integer('stock');
             $table->string('type', 45);
+            $table->string('image')->nullable(); // color image
             $table->boolean('plus')->default(0);
             $table->decimal('extra_plus')->default(0.00);
             $table->foreignIdFor(User::class, 'created_by')->nullable();

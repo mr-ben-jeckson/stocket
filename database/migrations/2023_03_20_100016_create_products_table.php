@@ -18,9 +18,10 @@ return new class extends Migration
             $table->id();
             $table->string('title', 2000);
             $table->string('slug', 2000);
-            $table->json('images');
+            $table->json('images'); // Array of Object
             $table->longText('description')->nullable();
             $table->decimal('price', 10, 2);
+            $table->json('features')->nullable(); // Array of Object
             $table->foreignIdFor(User::class, 'created_by')->nullable();
             $table->foreignIdFor(User::class, 'updated_by')->nullable();
             $table->softDeletes();

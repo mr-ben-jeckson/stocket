@@ -19,6 +19,8 @@ return new class extends Migration
             $table->foreignIdFor(User::class, 'user_id');
             $table->foreignId('product_id')->references('id')->on('products');
             $table->integer('quantity');
+            $table->string('size', 225)->nullable();
+            $table->string('color', 225)->nullable();
             $table->timestamps();
         });
     }

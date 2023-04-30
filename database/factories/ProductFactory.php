@@ -26,12 +26,21 @@ class ProductFactory extends Factory
         return $object;
     }
 
+    private function fakeFeatureObject() {
+        $object = (object) [
+            'id' => uniqid(),
+            'title' => fake()->word(),
+            'text' => fake()->unique()->word()
+        ];
+    }
+
     public function definition()
     {
         return [
             'title' => fake()->text(),
             'images' => json_encode([$this->fakeImageObject(), $this->fakeImageObject(), $this->fakeImageObject()]),
             'description' => fake()->realText(2000),
+            'features' => json_encode([$this->fakeFeatureObject(), $this->fakeFeatureObject(), $this->fakeFeatureObject(),$this->fakeFeatureObject()]),
             'price' => fake()->randomFloat(2, 20, 5000),
             'created_at' => now(),
             'updated_at' => now(),

@@ -26,13 +26,15 @@ class CategorySeeder extends Seeder
             'name' => "Computer & Accessories",
             'type' => "sub",
             'nested' => 1,
-            'locale' => json_encode(['mm' => fake()->randomElement(['အစားအစာခြောက်','အီလက်ထရောနစ်', 'နည်းပညာ']), 'en' => fake()->name()])
+            'locale' => json_encode(['mm' => fake()->randomElement(['အစားအစာခြောက်','အီလက်ထရောနစ်', 'နည်းပညာ']), 'en' => fake()->name()]),
+            'parent_id' => 1
         ]);
         Category::create([
             'name' => "Laptops",
             'type' => "child",
             'nested' => 2,
-            'locale' => json_encode(['mm' => fake()->randomElement(['အစားအစာခြောက်','အီလက်ထရောနစ်', 'နည်းပညာ']), 'en' => fake()->name()])
+            'locale' => json_encode(['mm' => fake()->randomElement(['အစားအစာခြောက်','အီလက်ထရောနစ်', 'နည်းပညာ']), 'en' => fake()->name()]),
+            'parent_id' => 2
         ]);
     }
 }
