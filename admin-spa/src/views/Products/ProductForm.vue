@@ -145,49 +145,72 @@
                         <div class="w-auto lg:col-span-4 md:col-span-2 px-2 mb-5 mt-5">
                             <div class="card flex justify-content-center">
                                 <InputSwitch id="published" v-model="product.published" />
-                                <label for="published" class="ml-2">
+                                <label for="published" class="ml-2 text-gray-500">
                                     Published the product for customers
                                 </label>
                             </div>
                         </div>
 
                         <!-- Feature Form-->
-                        <div class="w-auto lg:col-span-4 px-2 mb-5 mt-5">
-                            <div v-for="(feature, index) of product.features" :key="index"
-                                class="grid grid-cols-12 gap-2 w-full">
-                                <div class="col-span-3 max-sm:col-span-12 my-3">
-                                    <span class="p-float-label">
-                                        <InputText id="productFeatureHead" v-model="feature.head" class="w-full" />
-                                        <label for="productFeatureHead">Feature Name</label>
-                                    </span>
-                                </div>
-                                <div class="col-span-8 max-sm:col-span-10 my-3">
-                                    <span class="p-float-label">
-                                        <InputText id="productFeatureText" v-model="feature.text" class="w-full" />
-                                        <label for="productFeatureText">Feature Content</label>
-                                    </span>
-                                </div>
-                                <div v-if="product.features.length - 1 === index" class="w-auto my-auto mx-auto">
-                                    <Button icon="pi pi-plus-circle" @click.prevent="addFeature()" />
-                                </div>
-                                <div v-else class="w-auto my-auto mx-auto">
-                                    <Button icon="pi pi-minus-circle" @click.prevent="removeFeature(index)" />
-                                </div>
-                            </div>
+                        <div class="w-auto lg:col-span-4 md:col-span-2 px-2 my-5">
+                            <draggable v-model="product.features" item-key="index" @start="drag = true" @end="drag = false">
+                                <template #item="{ element, index }">
+                                    <div class="cursor-move">
+                                        <div class="grid grid-cols-12 gap-2 w-full my-3">
+                                            <div class="col-span-11 max-sm:col-span-10 my-3 w-full">
+                                                <div class="flex justify-between items-center">
+                                                    <div class="w-full pr-2">
+                                                        <span class="p-float-label">
+                                                            <InputText id="productFeatureHead" v-model="element.head"
+                                                                class="w-full" />
+                                                            <label for="productFeatureHead">Feature Name {{ index + 1
+                                                            }}</label>
+                                                        </span>
+                                                    </div>
+                                                    <div class="w-full pl-2">
+                                                        <span class="p-float-label">
+                                                            <InputText id="productFeatureText" v-model="element.text"
+                                                                class="w-full" />
+                                                            <label for="productFeatureText">Feature Text {{ index + 1
+                                                            }}</label>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="max-sm:col-span-2 my-auto flex justify-end">
+                                                <button :disabled="index === 0" @click.prevent="removeFeature(index)"
+                                                    class="my-auto text-sm text-red-600">
+                                                    <i :class="index === 0 ? 'pi pi-lock' : 'pi pi-trash'"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template #footer>
+                                    <div class="w-auto lg:col-span-4 md:col-span-2 mb-5 mt-5">
+                                        <div class="card flex justify-start justify-items-center">
+                                            <button @click.prevent="addFeature()"> <i class="pi pi-plus-circle text-blue-600 my-auto"></i> </button>
+                                            <label for="addFeature" class="ml-2 my-auto text-gray-500">
+                                                Add more feature. You can drag to sort the above features
+                                            </label>
+                                        </div>
+                                    </div>
+                                </template>
+                            </draggable>
                         </div>
 
-                        <div class="w-atuo lg:col-span-2 px-2 mb-5 mt-5">
-                            <button @click.prevent="closeForm()"
-                                class="mt-3 w-full inline-flex justify-center border-gray-200 shadow-sm py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-gray-200 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                                Cancel
-                            </button>
-                        </div>
-                        <div class="w-atuo lg:col-span-2 px-2 mb-5 mt-5">
-                            <button type="submit"
-                                class="mt-3 w-full inline-flex justify-center border-gray-300 shadow-sm py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-blue-400"
-                                v-bind:disabled="isLoading">
-                                Save
-                            </button>
+                        <div class="w-auto lg:col-span-4 md:col-span-2 px-2 mb-5 mt-5">
+                            <div class="flex justify-between">
+                                <button @click.prevent="closeForm()"
+                                    class="my-auto border-gray-200 shadow-sm py-2 px-8 border border-transparent text-sm font-medium rounded-md text-black bg-gray-200 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                    Close Form 
+                                </button>
+                                <button type="submit"
+                                    class="my-auto border-gray-300 shadow-sm py-2 px-8 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-blue-400"
+                                    :disabled="isLoading">
+                                     Save Product
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -209,12 +232,13 @@ import Tag from "primevue/tag";
 import Button from "primevue/button";
 import InputSwitch from "primevue/inputswitch";
 import { useToast } from "primevue/usetoast";
-
+import draggable from 'vuedraggable'
 import store from "../../store";
 
 const isLoading = ref(false);
 const filesSelector = ref(null);
 const updateImages = ref([]);
+const draggableInputs = ref(null);
 const product = ref({
     id: props.product.id,
     title: props.product.title,
@@ -244,12 +268,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["update:modelValue"]);
-
-function closeForm() {
-    show.value = false;
-    filesSelector.value.clear();
-    emit("update:modelValue");
-}
 
 watchEffect(() => {
     product.value = {
@@ -330,6 +348,18 @@ function selectFileClear() {
     }
 }
 
+function closeForm() {
+    show.value = false;
+    filesSelector.value.clear();
+    product.value.features.length = 0;
+    product.value.features.push({
+        head: '',
+        text: ''
+    });
+    emit("update:modelValue");
+}
+
+
 const toast = useToast();
 
 function singleImageRemove(id, index, url) {
@@ -388,7 +418,7 @@ function onSubmit() {
             life: 3000,
         });
         return;
-    } else if (!product.value.features.length > 0) {
+    } else if (product.value.features.length === 0 || product.value.features[0].head === '' || product.value.features[0].text === '') {
         toast.add({
             severity: "error",
             summary: "Error",
@@ -397,6 +427,7 @@ function onSubmit() {
         });
         return;
     }
+
     const productObj = {
         title: product.value.title,
         description: product.value.description,

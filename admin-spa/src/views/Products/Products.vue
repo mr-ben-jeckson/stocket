@@ -25,7 +25,7 @@
     </div>
     <ProductForm  :class="isDropModelForm ? 'block' : 'hidden'" v-model="isDropModelForm" :product="productModel" />
     <ProductModal v-model="isShowCreateModal" :product="productModel" />
-    <ProductTable @clickEdit="editProduct" @clickDelete="() => isDropModelForm = false" />
+    <ProductTable @clickEdit="editProduct" @clickDelete="deleteProcess" />
     </div>
 </template>
 <script setup>
@@ -33,7 +33,7 @@ import ProductTable from './ProductTable.vue';
 import ProductModal from './ProductModal.vue';
 import ProductForm from './ProductForm.vue';
 import store from '../../store';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const isShowCreateModal = ref(false);
 const isDropModelForm = ref(false);
@@ -64,6 +64,11 @@ function showCreateModal() {
 function showDropModalForm() {
     productModel.value = {...defaultModel};
     isDropModelForm.value = true;
+}
+
+function deleteProcess() {
+    productModel.value = {...defaultModel};
+    isDropModelForm.value = false;
 }
 
 function editProduct(product) {
