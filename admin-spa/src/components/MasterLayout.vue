@@ -1,5 +1,7 @@
 <template>
   <div v-if="currentUser.id" class="min-h-full bg-gray-200 flex">
+    <!-- Toast -->
+    <Toast />
     <!-- Sidebar -->
     <SideBar :class="{ hidden: !isOpenedSideBar }" />
     <!-- Sidbar -->
@@ -24,6 +26,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import Loader from "./core/Loader.vue";
+import Toast from "primevue/toast";
 import SideBar from "./SideBar.vue";
 import NavBar from "./NavBar.vue";
 import store from "../store";

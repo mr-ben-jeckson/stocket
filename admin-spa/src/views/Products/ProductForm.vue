@@ -2,7 +2,6 @@
     <div class="bg-white p-4 rounded-lg shadow mb-3">
         <div class="row-auto justify-between pb-3 mb-3">
             <form @submit.prevent="onSubmit()">
-                <Toast />
                 <div class="bg-white px-4 pt-5 pb-4">
                     <h2 class="text-2xl font-semibold">
                         {{
@@ -226,7 +225,6 @@ import MultiSelect from "primevue/multiselect";
 import Textarea from "primevue/textarea";
 import FileUpload from "primevue/fileupload";
 import InputNumber from "primevue/inputnumber";
-import Toast from "primevue/toast";
 import Message from "primevue/message";
 import Tag from "primevue/tag";
 import Button from "primevue/button";
@@ -238,7 +236,6 @@ import store from "../../store";
 const isLoading = ref(false);
 const filesSelector = ref(null);
 const updateImages = ref([]);
-const draggableInputs = ref(null);
 const product = ref({
     id: props.product.id,
     title: props.product.title,

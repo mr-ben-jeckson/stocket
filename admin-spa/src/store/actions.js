@@ -125,3 +125,17 @@ export function getTag({commit}) {
                     commit('setTags', [false]);
                 })
 }
+
+export function createStock({commit}, stock) {
+    if(product.image instanceof File) {
+        const form = new FormData();
+        form.append('size', stock.size);
+        form.append('color', stock.color); //Json Object
+        form.append('productId', stock.productId);
+        form.append('plus', stock.plus);
+        form.append('extraPlus', stock.extraPlus);
+        form.append('image', stock.image);
+        stock = form;
+    }
+    return axiosClient.post('/stock', stock);
+}

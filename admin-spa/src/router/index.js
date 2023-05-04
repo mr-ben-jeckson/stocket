@@ -7,6 +7,7 @@ import ResetPassword from '../views/ResetPassword.vue';
 import Products from "../views/Products/Products.vue";
 import NotFound from '../views/NotFound.vue';
 import store from "../store";
+import ProductInventories from "../views/Inventories/ProductInventories.vue";
 
 const routes = [
     {
@@ -41,6 +42,21 @@ const routes = [
                 path: 'reports',
                 name: 'app.reports',
                 component: Dashboard
+            }
+        ]
+    },
+    {
+        path: '/stock',
+        name: 'stock',
+        component: MasterLayout,
+        meta: {
+            isAuthCheck: true
+        },
+        children: [
+            {
+                path: 'inventories/product_id=:id/',
+                name: 'stock.inventories',
+                component: ProductInventories
             }
         ]
     },

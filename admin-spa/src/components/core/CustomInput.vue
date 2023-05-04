@@ -24,6 +24,7 @@
                         @input="emit('update:modelValue', $event.target.value)"
                         :class="inputClasses"
                         :placeholder="label"
+                        :maxSize = "maxSize"
                 >
                 </textarea>
              </template>
@@ -32,10 +33,9 @@
                     :name="name"
                     :required="required"
                     :value="props.modelValue"
-                    @input="emit('change', $event.target.files)"
+                    @input="inputFileChange($event)"
                     :class="inputClasses"
                     :placeholder="label"
-                    :multiple="multiple"
                 />
              </template>
              <template v-else>
@@ -60,7 +60,8 @@
 </template>
 <script setup>
 import { computed } from "vue";
-
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
 const props = defineProps({
     modelValue: [ String, Number, File],
     label: String,
@@ -78,6 +79,10 @@ const props = defineProps({
     append: {
         type: String,
         default: ''
+    },
+    maxSize: {
+        type: Number,
+        default: 2097152
     },
     selectOptions: Array
 });
@@ -97,8 +102,32 @@ const inputClasses = computed(() => {
     return cls.join(' ');
 });
 const emit = defineEmits(['update:modelValue', 'change']);
+
+function inputFileChange(event) {
+    if(event.target.files[0].size > props.maxSize) {
+        toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: `Image Size must be equal or less than ${formatSize(props.maxSize)}`,
+            life: 3000,
+        });
+        event.target.value = null;
+        emit('change', event.target.files[0]);
+    } else {
+        emit('change', event.target.files[0]);
+    }
+}
+
 function onChange(value) {
   emit('update:modelValue', value)
   emit('change', value)
 }
+
+function formatSize(bytes){
+    if (bytes === 0) return "0 B";
+    const k = 1024;
+    const sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+};
 </script>
