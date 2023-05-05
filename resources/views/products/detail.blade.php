@@ -64,7 +64,7 @@
                 </h1>
                 <div class="text-xl text-yellow-600 font-bold mb-6" x-text="`$${price}`"></div>
                 <div class="flex items-center justify-start mb-5">
-                    @if (!empty($sizes))
+                    @if (!empty(json_decode($sizes)))
                         <div x-data="{
                             setSize: '{{json_decode($sizes)[0]->size}}',
                             colors: {{$colors}},

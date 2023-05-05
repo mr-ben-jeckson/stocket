@@ -49,6 +49,7 @@ class InventoryContorller extends Controller
         $data['created_by'] = $request->user()->id;
         // String Value of SQL Column Row Type which does exist
         $data['type'] = $this->typeDefinder($data);
+        if($data['plus']) $data['extra_plus'] = null;
         $inventory = Inventory::create($data);
         return new InventoryResource($inventory);
     }
@@ -115,6 +116,9 @@ class InventoryContorller extends Controller
         if($data['plus']) {
             if($dataType) $dataType = $dataType.'+ ADD-PRICE';
             else  $dataType = 'ADD_PRICE';
+        }
+        if($dataType) {
+            $dataType = 'DEFAULT';
         }
         return $dataType;
     }
