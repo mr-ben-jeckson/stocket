@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\InventoryContorller;
 use App\Http\Controllers\Api\TagController;
 
 /*
@@ -22,6 +23,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function() {
     Route::delete('/product/gallery/remove', [\App\Http\Controllers\Api\ProductController::class, 'singleImageRemove']);
     Route::apiResource('/category', CategoryController::class);
     Route::apiResource('/tag', TagController::class);
+    Route::apiResource('/inventory', InventoryContorller::class);
 });
 
 Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);

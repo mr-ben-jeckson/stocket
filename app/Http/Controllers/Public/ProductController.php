@@ -21,8 +21,29 @@ class ProductController extends Controller
         if ($product->is_published == 0) {
             return back();
         } else {
+            $getSize = $product->stocks->unique('size');
+            $sizes = $getSize->map(
+               fn($getSize)=>[
+                    'id' => $getSize->id,
+                    'size' => $getSize->size,
+                    'plus' => $getSize->plus,
+                    'extraPlus' => $getSize->extra_plus
+               ]
+            );
+            $getColor = $product->stocks;
+            $colors = $getColor->map(
+                fn($getColor) => [
+                    'id' => $getColor->id,
+                    'size' => $getColor->size,
+                    'color' => json_decode($getColor->color, false),
+                    'plus' => $getColor->plus,
+                    'extraPlus' => $getColor->extra_plus
+                ]
+            );
             return view('products.detail', [
-                'product' => $product
+                'product' => $product,
+                'sizes' => $sizes,
+                'colors' => $colors
             ]);
         }
     }

@@ -127,15 +127,16 @@ export function getTag({commit}) {
 }
 
 export function createStock({commit}, stock) {
-    if(product.image instanceof File) {
+    if(stock.image instanceof File) {
         const form = new FormData();
+        form.append('product_id', stock.productId);
         form.append('size', stock.size);
-        form.append('color', stock.color); //Json Object
-        form.append('productId', stock.productId);
-        form.append('plus', stock.plus);
-        form.append('extraPlus', stock.extraPlus);
+        form.append('color', JSON.stringify(stock.color)); //Must be Object String
         form.append('image', stock.image);
+        form.append('stock', stock.stock);
+        form.append('plus', stock.plus);
+        form.append('extra_plus', stock.extraPlus);
         stock = form;
     }
-    return axiosClient.post('/stock', stock);
+    return axiosClient.post('/inventory', stock);
 }

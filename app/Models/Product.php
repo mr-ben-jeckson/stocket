@@ -47,4 +47,8 @@ class Product extends Model
     public function getRouteKeyName() {
         return 'slug';
     }
+
+    public function stocks() {
+        return $this->hasMany(Inventory::class);
+    }
 }

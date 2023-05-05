@@ -95,6 +95,7 @@ import Checkbox from 'primevue/checkbox';
 import color from '../../assets/color';
 import { computed, ref, watchEffect } from "vue";
 import { useToast } from "primevue/usetoast";
+import store from "../../store";
 const isLoading = ref(false);
 const colors = ref(
     color
@@ -162,13 +163,17 @@ const setColor = (value) => {
 const result = computed(() => props.price + stock.value.extraPlus);
 const onSubmit = () => {
     const stockObj = {
+        productId: props.stock.productId,
         size: stock.value.size,
         color: stock.value.color,
         image: stock.value.image,
-        plus: stock.value.plus,
+        plus: productHasExtraPlus.value === true ? 1 : 0,
         extraPlus: stock.value.extraPlus,
         stock: stock.value.stock
     }
-    console.log(stockObj);
+    store.dispatch("createStock", stockObj)
+        .then((response) => {
+            console.log(response);
+        })
 }
 </script>

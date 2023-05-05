@@ -6,7 +6,7 @@
         <div class="grid gap-6 grid-cols-1 lg:grid-cols-5">
             <div class="lg:col-span-3 bg-gray-200 py-5">
                 <div x-data="{
-                    images:  {{ Js::from(json_decode($product->images)) }}.map(item => item.url),
+                    images: {{ Js::from(json_decode($product->images)) }}.map(item => item.url),
                     activeImage: null,
                     prev() {
                         let index = this.images.indexOf(this.activeImage);
@@ -51,47 +51,76 @@
                 </div>
                 <div class="md:block hidden p-5">
                     <div class="my-3">
-                        <x-product-category :categories="$product->categories"/>
+                        <x-product-category :categories="$product->categories" />
                     </div>
                     <div class="my-3">
                         <x-product-tag :tags="$product->tags" />
                     </div>
                 </div>
             </div>
-            <div class="lg:col-span-2">
+            <div x-data="{ price: {{ $product->price }}, defaultPrice: {{ $product->price }} }" class="lg:col-span-2">
                 <h1 class="text-lg font-semibold">
-                    {{$product->title}}
+                    {{ $product->title }}
                 </h1>
-                <div class="text-xl text-yellow-600 font-bold mb-6">$ {{ $product->price }}</div>
-                {{-- To Do Review & Reviewers --}}
-                {{-- <div class="flex items-center mb-6">
-                    <div class="flex items-center text-orange-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                            <path
-                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                            <path
-                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                            <path
-                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                            <path
-                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                        </svg>
-                    </div>
-                    <a href="#" class="ml-3 font-normal text-purple-600 hover:text-purple-500">
-                        67 reviews
-                    </a>
-                </div> --}}
+                <div class="text-xl text-yellow-600 font-bold mb-6" x-text="`$${price}`"></div>
+                <div class="flex items-center justify-start mb-5">
+                    @if (!empty($sizes))
+                        <div x-data="{
+                            setSize: '{{json_decode($sizes)[0]->size}}',
+                            colors: {{$colors}},
+                            getSizeColors() {
+                                return this.colors.filter((item) => item.size === this.setSize)
+                            },
+                            setColor: JSON.parse({{\App\Helpers\SizeColor::getDefaultColorFromSize($product->id, json_decode($sizes)[0]->size)->color}}).name
+                            }"
+                            @if (json_decode($sizes)[0]->plus)
+                            x-init="price = defaultPrice + {{json_decode($sizes)[0]->extraPlus}}"
+                            @endif
+                            class="relative overflow-x-auto">
+                            <div>
+                                <div class="flex text-sm font-semibold">
+                                    Available Sizes
+                                </div>
+                                <div class="inline-flex mt-3">
+                                    @foreach (json_decode($sizes) as $size)
+                                        <div class="px-3 py-2 ml-2 text-sm font-semibold cursor-pointer"
+                                            x-on:click="[
+                                                            setSize = '{{$size->size}}',
+                                                            setColor = JSON.parse({{\App\Helpers\SizeColor::getDefaultColorFromSize($product->id, $size->size)->color}}).name,
+                                                            price = defaultPrice + {{$size->extraPlus}}
+                                                        ]"
+                                            :class="setSize === '{{ $size->size }}' ? ' bg-yellow-600 text-white' :
+                                                'bg-gray-500 text-white'">
+                                            {{ $size->size }}
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex mt-3 text-sm font-semibold">
+                                    Available Colors
+                                </div>
+                                <div class="inline-flex mt-3">
+                                    <template x-for="color in getSizeColors">
+                                        <div class="w-[40px] h-[40px] px-2 py-2 ml-2 cursor-pointer"
+                                            x-on:click="setColor = JSON.parse(color.color).name"
+                                            :class="setColor === JSON.parse(color.color).name ? 'border-2 border-red-600' : 'border-2 border-gray-500'"
+                                            :style="`background: ${JSON.parse(color.color).hex}`"></div>
+                                    </template>
+                                </div>
+                                <div class="flex mt-3 text-sm font-semibold">
+                                    Selected Options
+                                </div>
+                                <div class="flex text-xs mt-3">
+                                    <span class="font-semibold ml-2">Size : </span>
+                                    <span class="text-red-600 text-sm font-bold ml-2" x-text="setSize"></span>
+                                    <span class="font-semibold ml-2">Color Family : </span>
+                                    <span class="text-red-600 text-sm font-bold ml-2" x-text="setColor"></span>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
                 <div class="flex items-center justify-between mb-5">
                     <label for="quantity" class="block font-bold mr-4">
                         Quantity
@@ -99,7 +128,7 @@
                     <x-text-input type="number" name="quantity" x-ref="quantityEl" value="1"
                         class="w-32 focus:border-yellow-600 focus:outline-none rounded max-w-[110px]" />
                 </div>
-                <button @click="addToCart(id, $refs.quantityEl.value)"
+                <button @click="addToCart( {{ $product->id }}, $refs.quantityEl.value)"
                     class="btn-primary bg-red-600 py-4 hover:bg-yellow-600 text-lg flex justify-center min-w-0 w-full mb-6">
                     <i class="fas fa-shopping-cart my-auto mr-3"></i>
                     Add to Cart
@@ -115,10 +144,10 @@
                         </thead>
                         <tbody>
                             @foreach (json_decode($product->features) as $feature)
-                            <tr class="border-b border-b-gray-200">
-                                <td class="font-semibold w-[50%]">{{ $feature->head }}</td>
-                                <td class="text-gray-500 w-[50%]">{{ $feature->text }}</td>
-                            </tr>
+                                <tr class="border-b border-b-gray-200">
+                                    <td class="font-semibold w-[50%]">{{ $feature->head }}</td>
+                                    <td class="text-gray-500 w-[50%]">{{ $feature->text }}</td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -126,8 +155,8 @@
                 <div class="mb-6" x-data="{ expanded: false }">
                     <div x-show="expanded" x-collapse.min.120px class="text-gray-500 wysiwyg-content">
                         <p class="text-gray-500">
-                            <h2 class="text-lg font-bold text-black">About Product</h2>
-                            {{ $product->description }}
+                        <h2 class="text-lg font-bold text-black">About Product</h2>
+                        {{ $product->description }}
                         </p>
                     </div>
                     <p class="text-right">
@@ -138,7 +167,7 @@
                 </div>
                 <div class="block md:hidden">
                     <div class="my-3">
-                        <x-product-category :categories="$product->categories"/>
+                        <x-product-category :categories="$product->categories" />
                     </div>
                     <div class="my-3">
                         <x-product-tag :tags="$product->tags" />
