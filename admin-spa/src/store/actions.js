@@ -137,6 +137,13 @@ export function createStock({commit}, stock) {
         form.append('plus', stock.plus);
         form.append('extra_plus', stock.extraPlus);
         stock = form;
+    } else {
+        stock.product_id = stock.productId; // Transform to Request Validated Format for Backend
+        delete stock.productId;
+        stock.extra_plus = stock.extraPlus; // Transform to Request Validated Format for Backend
+        delete stock.extraPlus;
+        stock.color = stock.color ? JSON.stringify(stock.color) : stock.color;  // Transform to Request Validated Format for Backend
     }
+    console.log(stock);
     return axiosClient.post('/inventory', stock);
 }

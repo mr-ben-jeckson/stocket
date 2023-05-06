@@ -45,11 +45,13 @@ class InventoryContorller extends Controller
         if ($image) {
             $data['image'] = $this->saveImage($image);
         }
-        $data['color'] = json_encode($data['color']);
+        $color = $data['color'] ?? null;
+        if($color) {
+            $data['color'] = json_encode($color);
+        }
         $data['created_by'] = $request->user()->id;
         // String Value of SQL Column Row Type which does exist
         $data['type'] = $this->typeDefinder($data);
-        if($data['plus']) $data['extra_plus'] = null;
         $inventory = Inventory::create($data);
         return new InventoryResource($inventory);
     }
@@ -117,7 +119,7 @@ class InventoryContorller extends Controller
             if($dataType) $dataType = $dataType.'+ ADD-PRICE';
             else  $dataType = 'ADD_PRICE';
         }
-        if($dataType) {
+        if(!$dataType) {
             $dataType = 'DEFAULT';
         }
         return $dataType;

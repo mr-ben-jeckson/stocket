@@ -65,115 +65,119 @@
                 <div class="text-xl text-yellow-600 font-bold mb-6" x-text="`$${price}`"></div>
                 <div class="flex items-center justify-start mb-5">
                     @if (!empty(json_decode($sizes)))
-                        <div x-data="{
-                            setSize: '{{json_decode($sizes)[0]->size}}',
-                            colors: {{$colors}},
-                            getSizeColors() {
-                                return this.colors.filter((item) => item.size === this.setSize)
-                            },
-                            setColor: JSON.parse({{\App\Helpers\SizeColor::getDefaultColorFromSize($product->id, json_decode($sizes)[0]->size)->color}}).name
-                            }"
-                            @if (json_decode($sizes)[0]->plus)
-                            x-init="price = defaultPrice + {{json_decode($sizes)[0]->extraPlus}}"
-                            @endif
-                            class="relative overflow-x-auto">
-                            <div>
-                                <div class="flex text-sm font-semibold">
-                                    Available Sizes
-                                </div>
-                                <div class="inline-flex mt-3">
-                                    @foreach (json_decode($sizes) as $size)
-                                        <div class="px-3 py-2 ml-2 text-sm font-semibold cursor-pointer"
-                                            x-on:click="[
-                                                            setSize = '{{$size->size}}',
-                                                            setColor = JSON.parse({{\App\Helpers\SizeColor::getDefaultColorFromSize($product->id, $size->size)->color}}).name,
-                                                            price = defaultPrice + {{$size->extraPlus}}
-                                                        ]"
-                                            :class="setSize === '{{ $size->size }}' ? ' bg-yellow-600 text-white' :
-                                                'bg-gray-500 text-white'">
-                                            {{ $size->size }}
-                                        </div>
-                                    @endforeach
-                                </div>
+                        @if (isset(json_decode($sizes)[0]->size) && isset(json_decode($colors)[0]->color))
+                            <div x-data="{
+                                setSize: '{{ json_decode($sizes)[0]->size }}',
+                                colors: {{ $colors }},
+                                getSizeColors() {
+                                    return this.colors.filter((item) => item.size === this.setSize)
+                                },
+                                setColor: JSON.parse({{ \App\Helpers\SizeColor::getDefaultColorFromSize($product->id, json_decode($sizes)[0]->size)->color }}).name
+                            }" @if (json_decode($sizes)[0]->plus)
+                                x-init="price = defaultPrice + {{ json_decode($sizes)[0]->extraPlus }}"
+                        @endif
+                        class="relative overflow-x-auto">
+                        <div>
+                            <div class="flex text-sm font-semibold">
+                                Available Sizes or Weight
                             </div>
-                            <div>
-                                <div class="flex mt-3 text-sm font-semibold">
-                                    Available Colors
-                                </div>
-                                <div class="inline-flex mt-3">
-                                    <template x-for="color in getSizeColors">
-                                        <div class="w-[40px] h-[40px] px-2 py-2 ml-2 cursor-pointer"
-                                            x-on:click="setColor = JSON.parse(color.color).name"
-                                            :class="setColor === JSON.parse(color.color).name ? 'border-2 border-red-600' : 'border-2 border-gray-500'"
-                                            :style="`background: ${JSON.parse(color.color).hex}`"></div>
-                                    </template>
-                                </div>
-                                <div class="flex mt-3 text-sm font-semibold">
-                                    Selected Options
-                                </div>
-                                <div class="flex text-xs mt-3">
-                                    <span class="font-semibold ml-2">Size : </span>
-                                    <span class="text-red-600 text-sm font-bold ml-2" x-text="setSize"></span>
-                                    <span class="font-semibold ml-2">Color Family : </span>
-                                    <span class="text-red-600 text-sm font-bold ml-2" x-text="setColor"></span>
-                                </div>
+                            <div class="inline-flex mt-3">
+                                @foreach (json_decode($sizes) as $size)
+                                    <div class="px-3 py-2 ml-2 text-sm font-semibold cursor-pointer"
+                                        x-on:click="[
+                                                                setSize = '{{ $size->size }}',
+                                                                setColor = JSON.parse({{ \App\Helpers\SizeColor::getDefaultColorFromSize($product->id, $size->size)->color }}).name,
+                                                                price = defaultPrice + {{ $size->extraPlus }}
+                                                            ]"
+                                        :class="setSize === '{{ $size->size }}' ? ' bg-yellow-600 text-white' :
+                                            'bg-gray-500 text-white'">
+                                        {{ $size->size }}
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
-                    @endif
+                        <div>
+                            <div class="flex mt-3 text-sm font-semibold">
+                                Available Colors
+                            </div>
+                            <div class="inline-flex mt-3">
+                                <template x-for="color in getSizeColors">
+                                    <div class="w-[40px] h-[40px] px-2 py-2 ml-2 cursor-pointer"
+                                        x-on:click="[
+                                                                setColor = JSON.parse(color.color).name,
+                                                                price = defaultPrice + JSON.parse(color.extraPlus)
+                                                            ]"
+                                        :class="setColor === JSON.parse(color.color).name ? 'border-2 border-red-600' :
+                                            'border-2 border-gray-500'"
+                                        :style="`background: ${JSON.parse(color.color).hex}`"></div>
+                                </template>
+                            </div>
+                            <div class="flex mt-3 text-sm font-semibold">
+                                Selected Options
+                            </div>
+                            <div class="flex text-xs mt-3">
+                                <span class="font-semibold ml-2">Size or Weight : </span>
+                                <span class="text-red-600 text-sm font-bold ml-2" x-text="setSize"></span>
+                                <span class="font-semibold ml-2">Color Family : </span>
+                                <span class="text-red-600 text-sm font-bold ml-2" x-text="setColor"></span>
+                            </div>
+                        </div>
                 </div>
-                <div class="flex items-center justify-between mb-5">
-                    <label for="quantity" class="block font-bold mr-4">
-                        Quantity
-                    </label>
-                    <x-text-input type="number" name="quantity" x-ref="quantityEl" value="1"
-                        class="w-32 focus:border-yellow-600 focus:outline-none rounded max-w-[110px]" />
-                </div>
-                <button @click="addToCart( {{ $product->id }}, $refs.quantityEl.value)"
-                    class="btn-primary bg-red-600 py-4 hover:bg-yellow-600 text-lg flex justify-center min-w-0 w-full mb-6">
-                    <i class="fas fa-shopping-cart my-auto mr-3"></i>
-                    Add to Cart
-                </button>
-                <div class="my-3">
-                    <table class="w-full">
-                        <thead>
-                            <tr>
-                                <td colspan="2" class="w-full">
-                                    <h2 class="text-lg font-bold text-black">Features</h2>
-                                </td>
+                @endif
+                @endif
+            </div>
+            <div class="flex items-center justify-between mb-5">
+                <label for="quantity" class="block font-bold mr-4">
+                    Quantity
+                </label>
+                <x-text-input type="number" name="quantity" x-ref="quantityEl" value="1"
+                    class="w-32 focus:border-yellow-600 focus:outline-none rounded max-w-[110px]" />
+            </div>
+            <button @click="addToCart( {{ $product->id }}, $refs.quantityEl.value)"
+                class="btn-primary bg-red-600 py-4 hover:bg-yellow-600 text-lg flex justify-center min-w-0 w-full mb-6">
+                <i class="fas fa-shopping-cart my-auto mr-3"></i>
+                Add to Cart
+            </button>
+            <div class="my-3">
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <td colspan="2" class="w-full">
+                                <h2 class="text-lg font-bold text-black">Features</h2>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (json_decode($product->features) as $feature)
+                            <tr class="border-b border-b-gray-200">
+                                <td class="font-semibold w-[50%]">{{ $feature->head }}</td>
+                                <td class="text-gray-500 w-[50%]">{{ $feature->text }}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (json_decode($product->features) as $feature)
-                                <tr class="border-b border-b-gray-200">
-                                    <td class="font-semibold w-[50%]">{{ $feature->head }}</td>
-                                    <td class="text-gray-500 w-[50%]">{{ $feature->text }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mb-6" x-data="{ expanded: false }">
-                    <div x-show="expanded" x-collapse.min.120px class="text-gray-500 wysiwyg-content">
-                        <p class="text-gray-500">
-                        <h2 class="text-lg font-bold text-black">About Product</h2>
-                        {{ $product->description }}
-                        </p>
-                    </div>
-                    <p class="text-right">
-                        <a @click="expanded = !expanded" href="javascript:void(0)"
-                            class="text-yelow-600 hover:text-gray-500"
-                            x-text="expanded ? 'Read Less' : 'Read More'"></a>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="mb-6" x-data="{ expanded: false }">
+                <div x-show="expanded" x-collapse.min.120px class="text-gray-500 wysiwyg-content">
+                    <p class="text-gray-500">
+                    <h2 class="text-lg font-bold text-black">About Product</h2>
+                    {{ $product->description }}
                     </p>
                 </div>
-                <div class="block md:hidden">
-                    <div class="my-3">
-                        <x-product-category :categories="$product->categories" />
-                    </div>
-                    <div class="my-3">
-                        <x-product-tag :tags="$product->tags" />
-                    </div>
+                <p class="text-right">
+                    <a @click="expanded = !expanded" href="javascript:void(0)"
+                        class="text-yelow-600 hover:text-gray-500" x-text="expanded ? 'Read Less' : 'Read More'"></a>
+                </p>
+            </div>
+            <div class="block md:hidden">
+                <div class="my-3">
+                    <x-product-category :categories="$product->categories" />
+                </div>
+                <div class="my-3">
+                    <x-product-tag :tags="$product->tags" />
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </x-app-layout>

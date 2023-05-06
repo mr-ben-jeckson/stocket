@@ -168,7 +168,7 @@ const onSubmit = () => {
         color: stock.value.color,
         image: stock.value.image,
         plus: productHasExtraPlus.value === true ? 1 : 0,
-        extraPlus: stock.value.extraPlus,
+        extraPlus: productHasExtraPlus.value === true ? stock.value.extraPlus : Number(0.00),
         stock: stock.value.stock
     }
     store.dispatch("createStock", stockObj)
