@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Public;
 
+use App\Helpers\SizeColor;
 use App\Http\Controllers\Controller;
+use App\Models\Inventory;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -21,29 +23,21 @@ class ProductController extends Controller
         if ($product->is_published == 0) {
             return back();
         } else {
-            $getSize = $product->stocks->unique('size');
-            $sizes = $getSize->map(
-               fn($getSize)=>[
-                    'id' => $getSize->id,
-                    'size' => $getSize->size,
-                    'plus' => $getSize->plus,
-                    'extraPlus' => $getSize->extra_plus
-               ]
-            );
-            $getColor = $product->stocks;
-            $colors = $getColor->map(
-                fn($getColor) => [
-                    'id' => $getColor->id,
-                    'size' => $getColor->size,
-                    'color' => json_decode($getColor->color, false),
-                    'plus' => $getColor->plus,
-                    'extraPlus' => $getColor->extra_plus
-                ]
-            );
+            $sizeColorStock = $product->stocks->whereNotIn('type', 'DEFAULT')
+                                ->whereNotNull('size')
+                                ->whereNotNull('color')
+                                ->groupBy('size');
+            $sizeOnlyStock = $product->stocks->whereNotIn('type', 'DEFAULT')
+                                ->whereNotNull('size')
+                                ->whereNull('color');
+            $colorOnlyStock = $product->stocks->whereNotIn('type', 'DEFAULT')
+                                ->whereNull('size')
+                                ->whereNotNull('color');
             return view('products.detail', [
                 'product' => $product,
-                'sizes' => $sizes,
-                'colors' => $colors
+                'sizeColorStock' => $sizeColorStock,
+                'sizeOnlyStock' => $sizeOnlyStock,
+                'colorOnlyStock' => $colorOnlyStock
             ]);
         }
     }
