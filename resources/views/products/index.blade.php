@@ -24,7 +24,7 @@
                         <a href="{{ route('product.detail', $product->slug) }}">
                         <img
                           src="{{ $product->image }}"
-                          class="w-full transition duration-300 ease-in-out hover:scale-110 object-cover"
+                          class="w-full h-[225px] transition duration-300 ease-in-out hover:scale-110 object-cover"
                           alt="{{ route('product.detail', $product->slug) }}" />
                         </a>
                     </div>

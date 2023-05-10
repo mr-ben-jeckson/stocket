@@ -9,6 +9,7 @@ use App\Models\Inventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Intervention\Image\Facades\Image;
 
 class InventoryContorller extends Controller
 {
@@ -46,7 +47,7 @@ class InventoryContorller extends Controller
             $data['image'] = $this->saveImage($image);
         }
         $color = $data['color'] ?? null;
-        if($color) {
+        if ($color) {
             $data['color'] = json_encode($color);
         }
         $data['created_by'] = $request->user()->id;
@@ -104,22 +105,22 @@ class InventoryContorller extends Controller
     private function typeDefinder($data)
     {
         $dataType = null;
-        if($data['size']) {
+        if ($data['size']) {
             $dataType = 'SIZE';
         }
-        if($data['color']) {
-            if($dataType) $dataType = $dataType.'+ COLOR';
+        if ($data['color']) {
+            if ($dataType) $dataType = $dataType . '+ COLOR';
             else  $dataType = 'COLOR';
         }
-        if($data['image']) {
-            if($dataType) $dataType = $dataType.'+ IMAGE';
+        if ($data['image']) {
+            if ($dataType) $dataType = $dataType . '+ IMAGE';
             else  $dataType = 'IMAGE';
         }
-        if($data['plus']) {
-            if($dataType) $dataType = $dataType.'+ ADD-PRICE';
+        if ($data['plus']) {
+            if ($dataType) $dataType = $dataType . '+ ADD-PRICE';
             else  $dataType = 'ADD_PRICE';
         }
-        if(!$dataType) {
+        if (!$dataType) {
             $dataType = 'DEFAULT';
         }
         return $dataType;
@@ -134,6 +135,14 @@ class InventoryContorller extends Controller
         if (!Storage::putFileAs('public/' . $path, $image, $image->getClientOriginalName())) {
             throw new \Exception("Unable to save \"{$image->getClientOriginalName()}\"");
         }
+        $toResizePath = $path . '/' . $image->getClientOriginalName();
+        // RESIZE 150 heigh x auto width
+        $resizedImage = Image::make(Storage::disk('public')->get($toResizePath))
+            ->resize(null, 150, function ($constraint) {
+                $constraint->aspectRatio();
+            })
+            ->stream();
+        Storage::disk('public')->put($toResizePath, $resizedImage);
         return URL::to(Storage::url($path . '/' . $image->getClientOriginalName()));
     }
 }

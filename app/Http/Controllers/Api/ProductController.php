@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
 {
@@ -48,8 +49,8 @@ class ProductController extends Controller
         // File Saving to Storage
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as
-            /** @var \Illuminate\Http\UploadedFile $image */
-            $image) {
+                /** @var \Illuminate\Http\UploadedFile $image */
+                $image) {
                 // saving image
                 $relativePath = $this->saveImage($image);
                 // object map needs four arguments
@@ -107,8 +108,8 @@ class ProductController extends Controller
         // File Saving to Storage
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as
-            /** @var \Illuminate\Http\UploadedFile $image */
-            $image) {
+                /** @var \Illuminate\Http\UploadedFile $image */
+                $image) {
                 // saving image
                 $relativePath = $this->saveImage($image);
                 // object map needs four arguments
@@ -225,8 +226,17 @@ class ProductController extends Controller
         if (!Storage::putFileAs('public/' . $path, $image, $image->getClientOriginalName())) {
             throw new \Exception("Unable to save \"{$image->getClientOriginalName()}\"");
         }
-
-        return $path . '/' . $image->getClientOriginalName();
+        $toWatermarkPath = $path . '/' . $image->getClientOriginalName();
+        // Adding Watermark on uploaded image
+        $watermarkLogo = Image::make(Storage::disk('public')->get('assets/watermark.png'));
+        $brandedImage = Image::make(Storage::disk('public')->get($toWatermarkPath))
+            ->resize(null, 720, function ($constraint) {
+                $constraint->aspectRatio();
+            })                                                  // Resize auto width and 720 px height
+            ->insert($watermarkLogo, 'bottom-right', 10, 10)    // Add Watermark
+            ->stream();                                         // encode image
+        Storage::disk('public')->put($toWatermarkPath,  $brandedImage);             // Overwirte
+        return $toWatermarkPath;
     }
 
     private function imageObjectMap($url, $mine, $storage, $size)

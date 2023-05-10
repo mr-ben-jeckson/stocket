@@ -15,8 +15,7 @@
                     <div class="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-none">
                         <div class="w-auto px-2 mb-5">
                             <span class="p-float-label">
-                                <InputText id="productTitle" v-model="product.title"
-                                    @keyup="() => (props.product.title = product.title)" class="w-full" />
+                                <InputText id="productTitle" v-model="product.title" class="w-full" />
                                 <label for="productTitle">Product Title</label>
                             </span>
                         </div>
@@ -202,7 +201,7 @@
                             <div class="flex justify-between">
                                 <button @click.prevent="closeForm()"
                                     class="my-auto border-gray-200 shadow-sm py-2 px-8 border border-transparent text-sm font-medium rounded-md text-black bg-gray-200 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                                    Close Form 
+                                    Close Form
                                 </button>
                                 <button type="submit"
                                     class="my-auto border-gray-300 shadow-sm py-2 px-8 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-blue-400"

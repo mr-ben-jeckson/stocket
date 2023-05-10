@@ -27,7 +27,7 @@
                     <div class="relative">
                         <template x-for="image in images">
                             <div x-show="activeImage === image" class="aspect-w-3 aspect-h-2">
-                                <img :src="image" alt="" class="w-auto mx-auto" />
+                                <img :src="image" alt="" class="w-auto h-auto mx-auto" />
                             </div>
                         </template>
                         <a @click.prevent="prev"
@@ -77,7 +77,7 @@
                             Choose Options
                         </div>
                         <div class="inline-flex">
-                            <template x-for="size in Object.keys(sizes)" :key="size">
+                            <template x-init="selectedColor = JSON.parse(JSON.parse(sizes[selectedSize][0].color)).name" x-for="size in Object.keys(sizes)" :key="size">
                                 <span
                                     x-on:click="[
                                         selectedSize = size,
@@ -95,12 +95,6 @@
                         <div class="flex mt-3">
                             <template x-for="(color, index) in sizes[selectedSize]" :key="index">
                                 <div
-                                    x-data="{
-                                        init() {
-                                            if(index === 0) selectedColor = JSON.parse(JSON.parse(color.color)).name;
-                                            if(index === 0 && color.plus) price = defaultPrice + JSON.parse(color.extra_plus)
-                                        }
-                                    }"
                                     x-on:click="[selectedColor = JSON.parse(JSON.parse(color.color)).name, price = defaultPrice + JSON.parse(color.extra_plus)]"
                                     class="w-[40px] h-[40px] px-2 py-2 ml-2 cursor-pointer rounded-md"
                                     :class="selectedColor === JSON.parse(JSON.parse(color.color)).name ? 'border-2 border-white shadow-md shadow-black': 'border-1 border-back'"
@@ -111,10 +105,10 @@
                         </div>
                         <div class="flex mt-3">
                             <template x-for="(color, index) in sizes[selectedSize]" :key="index">
-                                <img x-if="color.image"
+                                <img
                                 x-on:click="[selectedColor = JSON.parse(JSON.parse(color.color)).name, price = defaultPrice + JSON.parse(color.extra_plus)]"
                                 :class="selectedColor === JSON.parse(JSON.parse(color.color)).name ? 'border-2 border-white shadow-md shadow-black': 'border-1 border-back'"
-                                :src="color.image" class="ml-2 w-[65px] h-[65px] object-cover cursor-pointer rounded-md transition-shadow" alt="color.name">
+                                :src="color.image" class="ml-2 w-[65px] h-[65px] object-cover bg-cover cursor-pointer rounded-md transition-shadow" alt="color.name">
                             </template>
                         </div>
                         <div class="my-3 font-bold">
@@ -154,7 +148,7 @@
                                 </div>
                             </div>
                         </div>
-                    @elseif ($colorOnlyStock->count > 0)
+                    @elseif ($colorOnlyStock->count() > 0)
                         <div>
                             {{$colorOnlyStock}}
                         </div>
