@@ -107,6 +107,7 @@ export function deleteProduct({commit}, id) {
 }
 
 export function getCategory({commit}) {
+    commit('getCategory', [true])
     return axiosClient.get('/category')
                 .then(res => {
                     commit('setCategories', [false, res.data]);
@@ -125,6 +126,10 @@ export function getCategoryLists({commit}) {
                 .catch(() => {
                     commit('setCategoryLists', [false]);
                 })
+}
+
+export function deleteCategory({commit}, id) {
+    return axiosClient.delete(`/category/${id}`);
 }
 
 export function getTag({commit}) {

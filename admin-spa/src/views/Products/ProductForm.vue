@@ -538,7 +538,7 @@ onMounted(() => {
 })
 
 function getCategory () {
-    store.dispatch('getCategory')
+    store.dispatch('getCategory');
 }
 
 function getTag () {
@@ -557,7 +557,8 @@ function showCategoryForm () {
 }
 
 function closeCategoryForm() {
-    isShowCategoryForm.value = false
+    getCategory();
+    isShowCategoryForm.value = false;
 }
 
 function removeFeature (index) {
