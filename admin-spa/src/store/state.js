@@ -19,7 +19,10 @@ const state = {
     },
     categories: {
         loading: false,
-        data: []
+        data: [],
+        primary: [],
+        sub: [],
+        child: [],
     },
     tag: {
         loading: false,

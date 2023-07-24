@@ -35,13 +35,26 @@
             </div>
             <div class="container">
                 <div class="grid grid-cols-3 max-sm:grid-cols-2 gap-3">
-                    <div class="card my-3 pt-6">
+                    <div v-if="categoryType == 1" class="card my-3 pt-6">
                         <Dropdown
-                            v-model="selectedCity"
-                            :options="cities"
+                            v-model="selectedCat"
+                            :options="categories.primary"
                             optionLabel="name"
-                            placeholder="Select a City"
+                            placeholder="Primary Category"
                             class="w-full md:w-14rem"
+                            filter
+                            showClear
+                        />
+                    </div>
+                    <div v-if="categoryType == 2" class="card my-3 pt-6">
+                        <Dropdown
+                            v-model="selectedSubCat"
+                            :options="categories.sub"
+                            optionLabel="name"
+                            placeholder="Sub Catgegory"
+                            class="w-full md:w-14rem"
+                            filter
+                            showClear
                         />
                     </div>
                     <div class="card my-3 pt-6">
@@ -65,16 +78,23 @@ import RadioButton from 'primevue/radiobutton'
 import Dropdown from 'primevue/dropdown'
 
 import { computed, onMounted, ref } from 'vue'
+import { useToast } from 'primevue/usetoast'
 import store from '../../store'
 
+const selectedCat = ref()
+const selectedSubCat = ref()
+const newCategory = ref()
+const categoryType = ref('0')
+
+const toast = useToast()
+
 const categories = computed(() => store.state.categories)
+
 onMounted(() => {
     getCategoryLists()
 })
 
-function getCategoryLists() {
-    store.dispatch('getCategoryLists');
+function getCategoryLists () {
+    store.dispatch('getCategoryLists')
 }
-
-const categoryType = ref('0')
 </script>

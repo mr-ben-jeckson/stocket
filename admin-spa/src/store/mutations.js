@@ -36,6 +36,9 @@ export function setCategories(state, [loading, response=null]) {
 export function setCategoryLists(state, [loading, response=null]) {
     if(response) {
         state.categories.data = response.data;
+        state.categories.primary = response.data.filter(item => item.nested === 0);
+        state.categories.sub = response.data.filter(item => item.nested === 1);
+        state.categories.child = response.data.filter(item => item.nested === 2);
     }
     state.categories.loading = loading;
 }

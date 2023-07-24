@@ -107,7 +107,7 @@ export function deleteProduct({commit}, id) {
 }
 
 export function getCategory({commit}) {
-    commit('getCategory', [true])
+    commit('setCategories', [true])
     return axiosClient.get('/category')
                 .then(res => {
                     commit('setCategories', [false, res.data]);
