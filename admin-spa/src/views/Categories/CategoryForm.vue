@@ -36,26 +36,34 @@
             <div class="container">
                 <div class="grid grid-cols-3 max-sm:grid-cols-2 gap-3">
                     <div v-if="categoryType == 1" class="card my-3 pt-6">
-                        <Dropdown
-                            v-model="selectedCat"
-                            :options="categories.primary"
-                            optionLabel="name"
-                            placeholder="Primary Category"
-                            class="w-full md:w-14rem"
-                            filter
-                            showClear
-                        />
+                        <div class="p-float-label">
+                            <Dropdown
+                                v-model="selectedCat"
+                                :options="categories.primary"
+                                optionLabel="name"
+                                placeholder="Primary Category"
+                                class="w-full md:w-14rem"
+                                inputId="primary"
+                                filter
+                                showClear
+                            />
+                            <label for="primary">Select Primary</label>
+                        </div>
                     </div>
                     <div v-if="categoryType == 2" class="card my-3 pt-6">
-                        <Dropdown
-                            v-model="selectedSubCat"
-                            :options="categories.sub"
-                            optionLabel="name"
-                            placeholder="Sub Catgegory"
-                            class="w-full md:w-14rem"
-                            filter
-                            showClear
-                        />
+                        <div class="p-float-label">
+                            <Dropdown
+                                v-model="selectedCat"
+                                :options="categories.sub"
+                                optionLabel="name"
+                                placeholder="Sub Category"
+                                class="w-full md:w-14rem"
+                                inputId="sub"
+                                filter
+                                showClear
+                            />
+                            <label for="sub">Select Sub-category</label>
+                        </div>
                     </div>
                     <div class="card my-3 pt-6">
                         <span class="p-float-label">
@@ -63,11 +71,18 @@
                                 id="newCategory"
                                 v-model="newCategory"
                                 class="w-full"
+                                @change="checkName()"
                             />
                             <label for="newCategory">Enter Category Name</label>
                         </span>
                     </div>
+                    <div class="card my-3 pt-6">
+                        <Button icon="pi pi-check" aria-label="Submit" />
+                    </div>
                 </div>
+            </div>
+            <div class="container">
+                <Divider />
             </div>
         </div>
     </div>
@@ -76,6 +91,8 @@
 import InputText from 'primevue/inputtext'
 import RadioButton from 'primevue/radiobutton'
 import Dropdown from 'primevue/dropdown'
+import Button from 'primevue/button'
+import Divider from 'primevue/divider'
 
 import { computed, onMounted, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
@@ -96,5 +113,23 @@ onMounted(() => {
 
 function getCategoryLists () {
     store.dispatch('getCategoryLists')
+}
+
+const checkName = () => {
+    if (categoryType.value == 0) {
+        if (
+            categories.value.primary.find(
+                item => item.name == newCategory.value
+            )
+        ) {
+            toast.add({
+                severity: 'error',
+                summary: 'Name Already Exist',
+                detail: 'Please re-enter name',
+                life: 3000
+            })
+            newCategory.value = null
+        }
+    }
 }
 </script>
