@@ -10,6 +10,7 @@
                 <div class="flex justify-between items-center align-middle">
                     <a
                         href="#"
+                        @click="editCategory(category)"
                         class="text-sm text-blue-500 hover:text-black"
                         title="click to edit"
                     >
@@ -43,6 +44,12 @@ onMounted(() => {
 const confirm = useConfirm()
 const toast = useToast()
 
+const emit = defineEmits(['clickEdit']);
+
+function editCategory (category) {
+    emit('clickEdit', category);
+}
+
 function getCategoryLists () {
     store.dispatch('getCategoryLists')
 }
@@ -57,7 +64,7 @@ const deleteConfrim = id => {
             store.dispatch('deleteCategory', id).then(res => {
                 toast.add({
                     severity: 'info',
-                    summary: 'Confirmed',
+                    summary: 'Success',
                     detail: 'Record deleted',
                     life: 3000
                 })

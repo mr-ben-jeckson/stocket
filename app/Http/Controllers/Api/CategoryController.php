@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryListsResource;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
@@ -41,9 +42,27 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        //
+        $data = $request->validated();
+        if(Category::where('name', $data['name'])->exists()){
+            return response()->json([
+                'message' => 'Category already exists'
+            ], 422);
+        } else {
+            if($data['nested'] == 0) {
+                $data['type'] = 'main';
+            } elseif ($data['nested'] == 1) {
+                $data['type'] = 'sub';
+            } elseif ($data['nested'] == 2) {
+                $data['type'] = 'child';
+            }
+            if($data['parent_id'] == null) {
+                $data['parent_id'] = 0;
+            }
+            $category = Category::create($data);
+            return new CategoryResource($category);
+        }
     }
 
     /**
@@ -75,9 +94,27 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request, Category $category)
     {
-        //
+            $data = $request->validated();
+            if(Category::where('name', $data['name'])->where('id', '!=', $category->id)->exists()){
+                return response()->json([
+                    'message' => 'Category already exists'
+                ], 422);
+            } else {
+                if($data['nested'] == 0) {
+                    $data['type'] = 'main';
+                } elseif ($data['nested'] == 1) {
+                    $data['type'] = 'sub';
+                } elseif ($data['nested'] == 2) {
+                    $data['type'] = 'child';
+                }
+                if($data['parent_id'] == null) {
+                    $data['parent_id'] = 0;
+                }
+                $category->update($data);
+                return new CategoryResource($category);
+            }
     }
 
     /**

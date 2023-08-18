@@ -128,6 +128,14 @@ export function getCategoryLists({commit}) {
                 })
 }
 
+export function createCategory({commit}, category) {
+    return axiosClient.post('/category', category);
+}
+
+export function updateCategory({commit}, category) {
+    return axiosClient.put(`/category/${category.id}`, category);
+}
+
 export function deleteCategory({commit}, id) {
     return axiosClient.delete(`/category/${id}`);
 }
@@ -160,6 +168,5 @@ export function createStock({commit}, stock) {
         delete stock.extraPlus;
         stock.color = stock.color ? JSON.stringify(stock.color) : stock.color;  // Transform to Request Validated Format for Backend
     }
-    console.log(stock);
     return axiosClient.post('/inventory', stock);
 }
