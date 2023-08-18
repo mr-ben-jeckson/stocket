@@ -293,7 +293,8 @@
                                     placeholder="Select Tags"
                                     class="w-full"
                                 />
-                                <Button icon="pi pi-plus-circle" />
+                                <Button @click="showTagForm" icon="pi pi-plus-circle" />
+                                <TagModal v-model="isShowTagForm" @update:visible="closeTagForm()" />
                             </div>
                         </div>
                         <div
@@ -482,6 +483,7 @@ import InputSwitch from 'primevue/inputswitch'
 import { useToast } from 'primevue/usetoast'
 import draggable from 'vuedraggable'
 import CategoryModal from '../Categories/CategoryModal.vue'
+import TagModal from '../Tags/TagModal.vue'
 import store from '../../store'
 
 const isLoading = ref(false)
@@ -498,7 +500,8 @@ const product = ref({
     published: props.product.published,
     features: props.product.features
 })
-const isShowCategoryForm = ref(false)
+const isShowCategoryForm = ref(false);
+const isShowTagForm = ref(false);
 
 const category = computed(() => store.state.category.data)
 const tag = computed(() => store.state.tag.data)
@@ -556,9 +559,18 @@ function showCategoryForm () {
     isShowCategoryForm.value = true
 }
 
+function showTagForm () {
+    isShowTagForm.value = true
+}
+
 function closeCategoryForm() {
     getCategory();
     isShowCategoryForm.value = false;
+}
+
+function closeTagForm() {
+    getTag();
+    isShowTagForm.value = false;
 }
 
 function removeFeature (index) {
